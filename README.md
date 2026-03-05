@@ -29,6 +29,7 @@ Projeto acadêmico voltado ao controle de entrada, acompanhamento e rastreabilid
 - [Critérios de Sucesso](#critérios-de-sucesso)
 - [Casos de Uso](#casos-de-uso)
 - [Modelo Entidade-Relacionamento (MER)](#modelo-entidade-relacionamento-mer)
+- [Licença](#licença)
 
 ## Integrantes do Grupo
 <table border="1" cellspacing="0" cellpadding="6">
@@ -375,3 +376,8 @@ Valores possíveis: Recebido, Em análise, Encaminhado e Finalizado.
 - **Documento 1:N Histórico:** um documento pode aparecer em vários históricos e cada histórico pertence a um documento.
 - **Documento N:1 TipoDocumento:** vários documentos podem ter um mesmo tipo.
 - **Documento N:1 StatusDocumento:** vários registros podem compartilhar um mesmo status.
+
+## Licença
+Este projeto está licenciado sob os termos da licença MIT.
+
+Consulte o arquivo `LICENSE` para mais detalhes.
