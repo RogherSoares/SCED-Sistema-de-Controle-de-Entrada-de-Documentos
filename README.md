@@ -140,6 +140,7 @@ O SCED propõe um sistema web para controle de entrada e acompanhamento de docum
   <img alt="HTML5" src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
   <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
   <img alt="Bootstrap" src="https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" />
+  <img alt="Figma" src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" />
 </p>
 
 ## Perfis de Usuário
@@ -376,6 +377,16 @@ Valores possíveis: Recebido, Em análise, Encaminhado e Finalizado.
 - **Documento 1:N Histórico:** um documento pode aparecer em vários históricos e cada histórico pertence a um documento.
 - **Documento N:1 TipoDocumento:** vários documentos podem ter um mesmo tipo.
 - **Documento N:1 StatusDocumento:** vários registros podem compartilhar um mesmo status.
+
+## Protótipo de Telas
+[![Abrir Protótipo no Figma](https://img.shields.io/badge/Abrir%20Prot%C3%B3tipo%20no%20Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/proto/uZ6IFe5GIKS7Eq1wjR0BBx/SCED?page-id=0%3A1&node-id=35-344&viewport=952%2C281%2C0.25&t=sRN9LcDoM4l3ZRbf-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=10%3A130)
+
+![Login](assets/img/Tela%20Login%20SCED.png)
+![Dashboard](assets/img/Dashboard%20SCED.png)
+![Cadastro de Documento](assets/img/Registro%20Documento%20SCED.png)
+![Consulta de Documentos](assets/img/Consulta%20SCED.png)
+![Relatório](assets/img/Relatorios%20SCED.png)
+![Gerenciamento de Usuários](assets/img/Gerenciamento%20Usuarios%20SCED.png)
 
 ## Licença
 Este projeto está licenciado sob os termos da licença MIT.
