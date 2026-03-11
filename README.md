@@ -29,6 +29,7 @@ Projeto acadêmico voltado ao controle de entrada, acompanhamento e rastreabilid
 - [Critérios de Sucesso](#critérios-de-sucesso)
 - [Casos de Uso](#casos-de-uso)
 - [Modelo Entidade-Relacionamento (MER)](#modelo-entidade-relacionamento-mer)
+- [Protótipo de Telas](#protótipo-de-telas)
 - [Licença](#licença)
 
 ## Integrantes do Grupo
