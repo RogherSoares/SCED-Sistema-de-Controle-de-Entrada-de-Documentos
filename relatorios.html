@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios e Histórico - SCED</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h4 class="mb-0">SCED</h4>
+            <small>Gestão de Documentos</small>
+        </div>
+
+        <div class="p-3">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link ">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>               
+                <li class="nav-item">
+                    <a href="registro.html" class="nav-link">
+                        <i class="bi bi-file-earmark-plus"></i> Registrar Entrada
+                    </a>
+                </li>               
+                <li class="nav-item">
+                    <a href="consulta.html" class="nav-link">
+                        <i class="bi bi-search"></i> Consultar
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="relatorios.html" class="nav-link active">
+                        <i class="bi bi-graph-up"></i> Relatórios
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="usuarios.html" class="nav-link">
+                        <i class="bi bi-people"></i> Usuários
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="mt-auto p-3">
+            <hr class="text-secondary">
+            <a href="login.html" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-left"></i> Sair
+            </a>
+        </div>
+    </nav>
+
+    <main id="content" class="bg-light">
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="top-title">Relatórios e Histórico</h2>
+                <div class="operator-card" aria-label="Informacoes do operador">
+                    <i class="bi bi-person-circle operator-icon" aria-hidden="true"></i>
+                    <h3 class="operator-name">Rogher Soares</h3>
+                    <span class="operator-badge">Operador</span>
+                </div>
+            </div>
+            <hr class="operator-divider">
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-3">Filtrar Relatório</h5>
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Período de Entrada</label>
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text small">De</span>
+                                    <input type="date" class="form-control">
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-text small">Até</span>
+                                    <input type="date" class="form-control">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Tipo de Documento</label>
+                                <select class="form-select">
+                                    <option selected>Todos os tipos</option>
+                                    <option>Ofício</option>
+                                    <option>Contrato</option>
+                                    <option>Memorando</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold">Status Atual</label>
+                                <select class="form-select">
+                                    <option selected>Qualquer status</option>
+                                    <option>Recebido</option>
+                                    <option>Em análise</option>
+                                    <option>Encaminhado</option>
+                                    <option>Finalizado</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-primary w-100 fw-bold">Gerar Relatório</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold">Histórico Recente de Movimentações</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Data/Hora</th>
+                                        <th>Protocolo</th>
+                                        <th>Status Anterior</th>
+                                        <th>Novo Status</th>
+                                        <th>Responsável</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="ps-3 small">06/03/2026 14:20</td>
+                                        <td class="fw-bold">2026.0042</td>
+                                        <td><span class="badge bg-success">Recebido</span></td>
+                                        <td><span class="badge bg-warning text-dark">Em análise</span></td>
+                                        <td class="small">Rogher Adriano</td> </tr>
+                                    <tr>
+                                        <td class="ps-3 small">06/03/2026 09:15</td>
+                                        <td class="fw-bold">2026.0041</td>
+                                        <td><span class="badge bg-warning text-dark">Em análise</span></td>
+                                        <td><span class="badge bg-info text-dark">Encaminhado</span></td>
+                                        <td class="small">Mateus Yano</td> </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="card border-0 bg-primary text-white p-3 text-center">
+                            <h4 class="mb-0 fw-bold">85%</h4>
+                            <small>Documentos em Dia</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 bg-success text-white p-3 text-center">
+                            <h4 class="mb-0 fw-bold">24h</h4>
+                            <small>Tempo Médio de Análise</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
