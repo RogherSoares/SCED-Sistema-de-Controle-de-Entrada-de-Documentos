@@ -1,0 +1,239 @@
+### SCED - Testes de Rotas (Nest + TypeORM)
+### Use com a extensao REST Client no VS Code
+
+@baseUrl = http://localhost:3000
+@json = Content-Type: application/json
+
+### =========================
+### HEALTH
+### =========================
+
+GET {{baseUrl}}/
+
+
+### =========================
+### USUARIOS
+### =========================
+
+### Criar usuario admin
+POST {{baseUrl}}/usuarios
+{{json}}
+
+{
+  "nome": "Admin SCED",
+  "email": "admin.sced@teste.com",
+  "senha": "123456",
+  "perfil": "admin"
+}
+
+### Criar usuario operador
+POST {{baseUrl}}/usuarios
+{{json}}
+
+{
+  "nome": "Operador SCED",
+  "email": "operador.sced@teste.com",
+  "senha": "123456",
+  "perfil": "operador"
+}
+
+### Login
+POST {{baseUrl}}/usuarios/login
+{{json}}
+
+{
+  "email": "admin.sced@teste.com",
+  "senha": "123456"
+}
+
+### Listar usuarios
+GET {{baseUrl}}/usuarios
+
+### Buscar usuario por id
+GET {{baseUrl}}/usuarios/1
+
+### Atualizar usuario
+PATCH {{baseUrl}}/usuarios/1
+{{json}}
+
+{
+  "nome": "Admin SCED Atualizado"
+}
+
+### Remover usuario
+DELETE {{baseUrl}}/usuarios/2
+
+
+### =========================
+### TIPOS DE DOCUMENTO
+### =========================
+
+### Criar tipo
+POST {{baseUrl}}/tipos-documento
+{{json}}
+
+{
+  "nomeTipo": "Oficio",
+  "descricao": "Comunicacao oficial"
+}
+
+### Criar tipo 2
+POST {{baseUrl}}/tipos-documento
+{{json}}
+
+{
+  "nomeTipo": "Memorando",
+  "descricao": "Comunicacao interna"
+}
+
+### Listar tipos
+GET {{baseUrl}}/tipos-documento
+
+### Buscar tipo por id
+GET {{baseUrl}}/tipos-documento/1
+
+### Atualizar tipo
+PATCH {{baseUrl}}/tipos-documento/1
+{{json}}
+
+{
+  "descricao": "Comunicacao oficial externa"
+}
+
+### Remover tipo
+DELETE {{baseUrl}}/tipos-documento/2
+
+
+### =========================
+### STATUS DE DOCUMENTO
+### =========================
+
+### Criar status Recebido
+POST {{baseUrl}}/status-documento
+{{json}}
+
+{
+  "nomeStatus": "Recebido"
+}
+
+### Criar status Em analise
+POST {{baseUrl}}/status-documento
+{{json}}
+
+{
+  "nomeStatus": "Em analise"
+}
+
+### Listar status
+GET {{baseUrl}}/status-documento
+
+### Buscar status por id
+GET {{baseUrl}}/status-documento/1
+
+### Atualizar status
+PATCH {{baseUrl}}/status-documento/2
+{{json}}
+
+{
+  "nomeStatus": "Em Analise"
+}
+
+### Remover status
+DELETE {{baseUrl}}/status-documento/2
+
+
+### =========================
+### DOCUMENTOS
+### =========================
+
+### Criar documento (depende de idTipo=1 e idStatus=1)
+POST {{baseUrl}}/documentos
+{{json}}
+
+{
+  "protocolo": "2026.00001",
+  "remetente": "Prefeitura Municipal",
+  "descricao": "Solicitacao de documentos",
+  "arquivoUrl": "",
+  "dataEntrada": "2026-03-25T10:00:00.000Z",
+  "idTipo": 1,
+  "idStatus": 1
+}
+
+### Criar documento 2
+POST {{baseUrl}}/documentos
+{{json}}
+
+{
+  "protocolo": "2026.00002",
+  "remetente": "Empresa XPTO",
+  "descricao": "Contrato para avaliacao",
+  "arquivoUrl": "",
+  "dataEntrada": "2026-03-25T11:00:00.000Z",
+  "idTipo": 1,
+  "idStatus": 1
+}
+
+### Listar documentos
+GET {{baseUrl}}/documentos
+
+### Buscar documento por id
+GET {{baseUrl}}/documentos/1
+
+### Atualizar documento
+PATCH {{baseUrl}}/documentos/1
+{{json}}
+
+{
+  "descricao": "Solicitacao de documentos - atualizado",
+  "idStatus": 1
+}
+
+### Remover documento
+DELETE {{baseUrl}}/documentos/2
+
+
+### =========================
+### HISTORICOS
+### =========================
+
+### Criar historico (depende de idDocumento=1, idStatus=1, idUsuario=1)
+POST {{baseUrl}}/historicos
+{{json}}
+
+{
+  "idDocumento": 1,
+  "idStatus": 1,
+  "idUsuario": 1,
+  "dataMovimentacao": "2026-03-25T12:30:00.000Z",
+  "observacao": "Documento recebido no protocolo"
+}
+
+### Criar historico 2
+POST {{baseUrl}}/historicos
+{{json}}
+
+{
+  "idDocumento": 1,
+  "idStatus": 1,
+  "idUsuario": 1,
+  "dataMovimentacao": "2026-03-25T14:00:00.000Z",
+  "observacao": "Encaminhado para analise"
+}
+
+### Listar historicos
+GET {{baseUrl}}/historicos
+
+### Buscar historico por id
+GET {{baseUrl}}/historicos/1
+
+### Atualizar historico
+PATCH {{baseUrl}}/historicos/1
+{{json}}
+
+{
+  "observacao": "Documento recebido no protocolo - atualizado"
+}
+
+### Remover historico
+DELETE {{baseUrl}}/historicos/2

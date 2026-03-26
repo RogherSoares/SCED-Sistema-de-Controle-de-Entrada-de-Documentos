@@ -1,8 +1,55 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { createServer } from 'node:net';
 import { AppModule } from './app/app.module';
+
+function isPortAvailable(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const server = createServer();
+
+    server.once('error', () => {
+      resolve(false);
+    });
+
+    server.once('listening', () => {
+      server.close(() => resolve(true));
+    });
+
+    server.listen(port, '0.0.0.0');
+  });
+}
+
+async function getAvailablePort(preferredPort: number): Promise<number> {
+  let port = preferredPort;
+
+  while (!(await isPortAvailable(port))) {
+    port += 1;
+  }
+
+  return port;
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  app.enableCors({ origin: true, credentials: true });
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: false,
+    }),
+  );
+
+  const preferredPort = Number(process.env.PORT ?? 3000);
+  const availablePort = await getAvailablePort(preferredPort);
+
+  if (availablePort !== preferredPort) {
+    console.warn(
+      `Porta ${preferredPort} ocupada. Iniciando servidor na porta ${availablePort}.`,
+    );
+  }
+
+  await app.listen(availablePort);
 }
-bootstrap();
+
+void bootstrap();
