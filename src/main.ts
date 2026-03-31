@@ -1,6 +1,8 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { createServer } from 'node:net';
+import { join } from 'node:path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app/app.module';
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -30,7 +32,8 @@ async function getAvailablePort(preferredPort: number): Promise<number> {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useStaticAssets(join(process.cwd()), { index: false });
   app.enableCors({ origin: true, credentials: true });
   app.useGlobalPipes(
     new ValidationPipe({
