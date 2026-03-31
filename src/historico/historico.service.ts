@@ -69,6 +69,14 @@ export class HistoricoService {
     });
   }
 
+  findByDocumento(idDocumento: number) {
+    return this.historicosRepository.find({
+      where: { documento: { idDocumento } },
+      relations: ['documento', 'status', 'usuario'],
+      order: { dataMovimentacao: 'DESC' },
+    });
+  }
+
   async findOne(id: number) {
     const historico = await this.historicosRepository.findOne({
       where: { idHistorico: id },

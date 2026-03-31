@@ -25,6 +25,11 @@ export class HistoricoController {
     return this.historicoService.findAll();
   }
 
+  @Get('documento/:idDocumento')
+  findByDocumento(@Param('idDocumento') idDocumento: string) {
+    return this.historicoService.findByDocumento(+idDocumento);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.historicoService.findOne(+id);

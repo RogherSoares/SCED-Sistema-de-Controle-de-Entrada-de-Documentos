@@ -78,6 +78,26 @@ h2.top-title {
   padding: 5px 10px;
 }
 
+.status-badge.status-recebido {
+  background-color: #3f7ec9;
+  color: #fff;
+}
+
+.status-badge.status-analise {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.status-badge.status-encaminhado {
+  background-color: #0dcaf0;
+  color: #212529;
+}
+
+.status-badge.status-finalizado {
+  background-color: #198754;
+  color: #fff;
+}
+
 .operator-card {
   border-radius: 2px;
   padding: 8px 14px 7px;

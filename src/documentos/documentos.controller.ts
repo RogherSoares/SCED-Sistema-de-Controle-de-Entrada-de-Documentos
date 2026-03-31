@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { DocumentosService } from './documentos.service';
 import { CreateDocumentoDto } from './dto/create-documento.dto';
@@ -21,8 +22,21 @@ export class DocumentosController {
   }
 
   @Get()
-  findAll() {
-    return this.documentosService.findAll();
+  findAll(
+    @Query('protocolo') protocolo?: string,
+    @Query('idTipo') idTipo?: string,
+    @Query('remetente') remetente?: string,
+  ) {
+    return this.documentosService.findAll({
+      protocolo,
+      idTipo,
+      remetente,
+    });
+  }
+
+  @Get('metrics/dashboard')
+  getDashboardMetrics() {
+    return this.documentosService.getDashboardMetrics();
   }
 
   @Get(':id')

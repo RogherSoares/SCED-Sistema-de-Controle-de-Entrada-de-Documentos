@@ -7,6 +7,19 @@ import { DocumentoEntity } from './entities/documento.entity';
 import { TiposDocumentoEntity } from '../tipos-documentos/entities/tipos-documento.entity';
 import { StatusDocumentoEntity } from '../status-documentos/entities/status-documento.entity';
 
+type DashboardMetrics = {
+  totalRecebidos: number;
+  emAnalise: number;
+  encaminhados: number;
+  finalizados: number;
+};
+
+type DocumentoFilters = {
+  protocolo?: string;
+  idTipo?: string;
+  remetente?: string;
+};
+
 @Injectable()
 export class DocumentosService {
   constructor(
@@ -50,11 +63,33 @@ export class DocumentosService {
     return this.documentosRepository.save(documento);
   }
 
-  findAll() {
-    return this.documentosRepository.find({
-      relations: ['tipo', 'status'],
-      order: { idDocumento: 'DESC' },
-    });
+  findAll(filters?: DocumentoFilters) {
+    const query = this.documentosRepository
+      .createQueryBuilder('documento')
+      .leftJoinAndSelect('documento.tipo', 'tipo')
+      .leftJoinAndSelect('documento.status', 'status')
+      .orderBy('documento.id_documento', 'DESC');
+
+    const protocolo = filters?.protocolo?.trim();
+    if (protocolo) {
+      query.andWhere('documento.protocolo ILIKE :protocolo', {
+        protocolo: `%${protocolo}%`,
+      });
+    }
+
+    const remetente = filters?.remetente?.trim();
+    if (remetente) {
+      query.andWhere('documento.remetente ILIKE :remetente', {
+        remetente: `%${remetente}%`,
+      });
+    }
+
+    const idTipo = Number(filters?.idTipo);
+    if (Number.isFinite(idTipo) && idTipo > 0) {
+      query.andWhere('tipo.id_tipo = :idTipo', { idTipo });
+    }
+
+    return query.getMany();
   }
 
   async findOne(id: number) {
@@ -122,5 +157,29 @@ export class DocumentosService {
     const documento = await this.findOne(id);
     await this.documentosRepository.remove(documento);
     return { message: `Documento ${id} removido com sucesso` };
+  }
+
+  async getDashboardMetrics(): Promise<DashboardMetrics> {
+    const totalRecebidos = await this.documentosRepository.count();
+
+    const statusRows = await this.documentosRepository
+      .createQueryBuilder('documento')
+      .innerJoin('documento.status', 'status')
+      .select('LOWER(status.nome_status)', 'status')
+      .addSelect('COUNT(documento.id_documento)', 'total')
+      .groupBy('LOWER(status.nome_status)')
+      .getRawMany<{ status: string; total: string }>();
+
+    const byStatus = statusRows.reduce<Record<string, number>>((acc, row) => {
+      acc[row.status] = Number(row.total);
+      return acc;
+    }, {});
+
+    return {
+      totalRecebidos,
+      emAnalise: byStatus['em analise'] ?? byStatus['em análise'] ?? 0,
+      encaminhados: byStatus['encaminhado'] ?? byStatus['encaminhados'] ?? 0,
+      finalizados: byStatus['finalizado'] ?? byStatus['finalizados'] ?? 0,
+    };
   }
 }

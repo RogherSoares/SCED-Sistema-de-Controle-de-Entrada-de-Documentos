@@ -76,49 +76,52 @@
         <div class="col-xl-3 col-md-6">
           <div class="metric-card metric-recebidos">
             <p class="metric-label">Total Recebidos</p>
-            <h3 class="metric-value">124</h3>
+            <h3 class="metric-value" id="metricTotalRecebidos">0</h3>
           </div>
         </div>
         <div class="col-xl-3 col-md-6">
           <div class="metric-card metric-analise">
             <p class="metric-label">Em Analise</p>
-            <h3 class="metric-value">18</h3>
+            <h3 class="metric-value" id="metricEmAnalise">0</h3>
           </div>
         </div>
         <div class="col-xl-3 col-md-6">
           <div class="metric-card metric-encaminhados">
             <p class="metric-label">Encaminhados</p>
-            <h3 class="metric-value">45</h3>
+            <h3 class="metric-value" id="metricEncaminhados">0</h3>
           </div>
         </div>
         <div class="col-xl-3 col-md-6">
           <div class="metric-card metric-finalizados">
             <p class="metric-label">Finalizados</p>
-            <h3 class="metric-value">61</h3>
+            <h3 class="metric-value" id="metricFinalizados">0</h3>
           </div>
         </div>
       </div>
 
       <div class="card mb-4">
         <div class="card-body">
-          <form class="row g-3">
+          <form class="row g-3" id="dashboardFiltroForm">
             <div class="col-md-3">
               <input
                 type="text"
                 class="form-control"
+                id="filtroProtocolo"
                 placeholder="Protocolo (ex: 2026.001)"
               />
             </div>
             <div class="col-md-3">
-              <select class="form-select">
-                <option selected>Tipo de Documento</option>
-                <option>Ofício</option>
-                <option>Contrato</option>
-                <option>Memorando</option>
+              <select class="form-select" id="filtroTipoDocumento">
+                <option selected disabled value="">Tipo de Documento</option>
               </select>
             </div>
             <div class="col-md-4">
-              <input type="text" class="form-control" placeholder="Remetente" />
+              <input
+                type="text"
+                class="form-control"
+                id="filtroRemetente"
+                placeholder="Remetente"
+              />
             </div>
             <div class="col-md-2">
               <button type="submit" class="btn btn-primary w-100">
@@ -142,47 +145,10 @@
                 <th class="text-center">Ações</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="dashboardDocumentosBody">
               <tr>
-                <td class="ps-4 fw-bold">2026.0042</td>
-                <td>Ofício</td>
-                <td>Prefeitura Municipal</td>
-                <td>05/03/2026</td>
-                <td>
-                  <span class="badge bg-warning text-dark status-badge"
-                    >Em análise</span
-                  >
-                </td>
-                <td class="text-center">
-                  <button
-                    class="btn btn-sm btn-outline-primary"
-                    title="Ver Histórico"
-                  >
-                    <i class="bi bi-clock-history"></i>
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-secondary"
-                    title="Alterar Status"
-                  >
-                    <i class="bi bi-pencil-square"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td class="ps-4 fw-bold">2026.0043</td>
-                <td>Contrato</td>
-                <td>Empresa XPTO</td>
-                <td>04/03/2026</td>
-                <td>
-                  <span class="badge bg-success status-badge">Recebido</span>
-                </td>
-                <td class="text-center">
-                  <button class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-clock-history"></i>
-                  </button>
-                  <button class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-pencil-square"></i>
-                  </button>
+                <td colspan="6" class="text-center py-4 text-muted">
+                  Carregando documentos...
                 </td>
               </tr>
             </tbody>
@@ -190,6 +156,102 @@
         </div>
       </div>
     </main>
+
+    <div
+      class="modal fade"
+      id="modalHistoricoDocumento"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="historicoModalTitle">
+              Historico do Documento
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="historicoDocumentoBody" class="text-muted">
+              Carregando historico...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalAlterarStatus"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="alterarStatusForm">
+            <div class="modal-header">
+              <h5 class="modal-title fw-bold" id="alterarStatusModalTitle">
+                Alterar Status
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Fechar"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="alterarStatusDocumentoId" />
+              <div class="mb-3">
+                <label for="alterarStatusSelect" class="form-label"
+                  >Novo status</label
+                >
+                <select id="alterarStatusSelect" class="form-select" required>
+                  <option value="" selected disabled>Selecione o status</option>
+                </select>
+              </div>
+              <div>
+                <label for="alterarStatusObservacao" class="form-label"
+                  >Observacao (opcional)</label
+                >
+                <textarea
+                  id="alterarStatusObservacao"
+                  class="form-control"
+                  rows="3"
+                  maxlength="255"
+                  placeholder="Detalhe da movimentacao"
+                ></textarea>
+              </div>
+              <div
+                id="alterarStatusErro"
+                class="text-danger small mt-2 d-none"
+              ></div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                id="alterarStatusSalvarBtn"
+              >
+                Salvar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/index.js"></script>
