@@ -94,6 +94,8 @@
     </nav>
 
     <main id="content" class="bg-light">
+      <div id="usuariosFeedback" class="alert d-none" role="alert"></div>
+
       <div class="mb-4">
         <div class="d-flex justify-content-between align-items-center">
           <h2 class="top-title">Gerenciamento de Usuários</h2>
@@ -114,6 +116,7 @@
             >
               <h5 class="mb-0 fw-bold">Gestão de Acessos</h5>
               <button
+                id="novoUsuarioBtn"
                 class="btn btn-sm btn-primary"
                 data-bs-toggle="modal"
                 data-bs-target="#modalNovoUsuario"
@@ -131,67 +134,10 @@
                     <th class="text-center">Ações</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="usuariosTableBody">
                   <tr>
-                    <td class="ps-3 fw-bold">Rogher Soares</td>
-                    <td>rogher.soares@sced.com</td>
-                    <td class="perfil-coluna">
-                      <span class="user-role-badge user-role-admin"
-                        >Administrador</span
-                      >
-                    </td>
-                    <td class="text-center">
-                      <button class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="ps-3 fw-bold">João Vinicius</td>
-                    <td>joao.vinicius@sced.com</td>
-                    <td class="perfil-coluna">
-                      <span class="user-role-badge">Operador</span>
-                    </td>
-                    <td class="text-center">
-                      <button class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="ps-3 fw-bold">Mateus Yano</td>
-                    <td>mateus.yano@sced.com</td>
-                    <td class="perfil-coluna">
-                      <span class="user-role-badge">Operador</span>
-                    </td>
-                    <td class="text-center">
-                      <button class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="ps-3 fw-bold">Thiago EMed</td>
-                    <td>thiago.emed@sced.com</td>
-                    <td class="perfil-coluna">
-                      <span class="user-role-badge">Operador</span>
-                    </td>
-                    <td class="text-center">
-                      <button class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-danger">
-                        <i class="bi bi-trash"></i>
-                      </button>
+                    <td colspan="4" class="text-center py-4 text-muted">
+                      Carregando usuarios...
                     </td>
                   </tr>
                 </tbody>
@@ -202,39 +148,23 @@
 
         <div class="col-md-4">
           <div class="card shadow-sm border-0">
-            <div class="card-header bg-white py-3">
+            <div
+              class="card-header bg-white py-3 d-flex justify-content-between align-items-center"
+            >
               <h5 class="mb-0 fw-bold">Tipos de Documento</h5>
+              <button
+                type="button"
+                class="btn btn-sm btn-success"
+                id="tipoDocumentoNovoBtn"
+                title="Novo tipo de documento"
+              >
+                <i class="bi bi-plus"></i>
+              </button>
             </div>
             <div class="card-body">
-              <form class="mb-4">
-                <div class="input-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Ex: Notificação"
-                  />
-                  <button class="btn btn-success" type="button">
-                    <i class="bi bi-plus"></i>
-                  </button>
-                </div>
-              </form>
-              <ul class="list-group list-group-flush">
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  Ofícios <span class="badge bg-light text-muted">ID: 01</span>
-                </li>
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  Memorandos
-                  <span class="badge bg-light text-muted">ID: 02</span>
-                </li>
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  Contratos
-                  <span class="badge bg-light text-muted">ID: 03</span>
+              <ul class="list-group list-group-flush" id="tiposDocumentoLista">
+                <li class="list-group-item text-muted">
+                  Carregando tipos de documento...
                 </li>
               </ul>
             </div>
@@ -247,7 +177,9 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title fw-bold">Cadastrar Usuário</h5>
+            <h5 class="modal-title fw-bold" id="usuarioModalTitulo">
+              Cadastrar Usuário
+            </h5>
             <button
               type="button"
               class="btn-close"
@@ -255,26 +187,98 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form>
+            <form id="usuarioForm">
+              <input type="hidden" id="usuarioId" />
               <div class="mb-3">
                 <label class="form-label small fw-bold">Nome Completo</label>
-                <input type="text" class="form-control" required />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="usuarioNome"
+                  maxlength="150"
+                  required
+                />
               </div>
               <div class="mb-3">
                 <label class="form-label small fw-bold">E-mail</label>
-                <input type="email" class="form-control" required />
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="usuarioEmailLocal"
+                    maxlength="120"
+                    placeholder="nome.sobrenome"
+                    required
+                  />
+                  <span class="input-group-text">@sced.com</span>
+                </div>
+                <div class="form-text">
+                  O dominio do e-mail e fixo em @sced.com.
+                </div>
               </div>
               <div class="mb-3">
-                <label class="form-label small fw-bold">Senha Inicial</label>
-                <input type="password" class="form-control" required />
+                <label class="form-label small fw-bold" id="usuarioSenhaLabel"
+                  >Senha Inicial</label
+                >
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="usuarioSenha"
+                    minlength="6"
+                    maxlength="255"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    id="toggleUsuarioSenha"
+                    data-target-input="usuarioSenha"
+                    aria-label="Mostrar ou ocultar senha"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+                <div class="form-text" id="usuarioSenhaHint">
+                  Obrigatoria para cadastrar novo usuario. Minimo de 6
+                  caracteres.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label
+                  class="form-label small fw-bold"
+                  id="usuarioConfirmarSenhaLabel"
+                  >Confirmar Senha</label
+                >
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="usuarioConfirmarSenha"
+                    minlength="6"
+                    maxlength="255"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    id="toggleUsuarioConfirmarSenha"
+                    data-target-input="usuarioConfirmarSenha"
+                    aria-label="Mostrar ou ocultar confirmacao de senha"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label small fw-bold">Perfil</label>
-                <select class="form-select">
+                <select class="form-select" id="usuarioPerfil" required>
                   <option value="admin">Administrador</option>
                   <option value="operador">Operador</option>
                 </select>
               </div>
+              <div
+                class="text-danger small mb-2 d-none"
+                id="usuarioFormErro"
+              ></div>
               <div class="text-end border-top pt-3">
                 <button
                   type="button"
@@ -283,7 +287,77 @@
                 >
                   Cancelar
                 </button>
-                <button type="submit" class="btn btn-primary px-4">
+                <button
+                  type="submit"
+                  class="btn btn-primary px-4"
+                  id="usuarioSalvarBtn"
+                >
+                  Salvar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalTipoDocumento" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="tipoDocumentoModalTitulo">
+              Novo Tipo de Documento
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="tipoDocumentoForm">
+              <input type="hidden" id="tipoDocumentoId" />
+              <div class="mb-3">
+                <label class="form-label small fw-bold"
+                  >Nome do Documento</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="tipoDocumentoNome"
+                  placeholder="Ex: Notificação"
+                  maxlength="120"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Descrição</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="tipoDocumentoDescricao"
+                  placeholder="Descrição (opcional)"
+                  maxlength="255"
+                />
+              </div>
+              <div
+                class="text-danger small mt-2 d-none"
+                id="tipoDocumentoFormErro"
+              ></div>
+              <div class="text-end border-top pt-3 mt-3">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary d-none"
+                  id="tipoDocumentoCancelarBtn"
+                >
+                  Cancelar edição
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-success"
+                  id="tipoDocumentoSalvarBtn"
+                  title="Salvar tipo de documento"
+                >
                   Salvar
                 </button>
               </div>
@@ -295,5 +369,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/index.js"></script>
+    <script src="assets/js/usuarios.js"></script>
   </body>
 </html>
