@@ -19,6 +19,7 @@ Projeto acadêmico voltado ao controle de entrada, acompanhamento e rastreabilid
 
 ## Sumário
 
+- [Guia Rápido (Clone até Primeiro Login)](#guia-rapido-clone-ate-primeiro-login)
 - [Integrantes do Grupo](#integrantes-do-grupo)
 - [Objetivo](#objetivo)
 - [Contexto e Problema](#contexto-e-problema)
@@ -42,6 +43,26 @@ Projeto acadêmico voltado ao controle de entrada, acompanhamento e rastreabilid
 - [Modelo Entidade-Relacionamento (MER)](#modelo-entidade-relacionamento-mer)
 - [Protótipo de Telas](#protótipo-de-telas)
 - [Licença](#licença)
+
+<a id="guia-rapido-clone-ate-primeiro-login"></a>
+
+## Guia Rápido (Clone até Primeiro Login)
+
+
+Use este bloco apenas como checklist. O passo a passo completo está nas seções abaixo.
+
+1. Clone e instale as dependências.
+2. Suba o PostgreSQL (Docker ou instância local).
+3. Configure o ambiente no arquivo .env.
+4. Inicie com npm run start:dev.
+5. Acesse login.html, crie o primeiro admin e faça login.
+
+Detalhamento:
+
+- Execução: [Como Executar o Projeto](#como-executar-o-projeto)
+- Ambiente e HTTPS: [Configuração de Ambiente](#configuração-de-ambiente)
+- API e autenticação: [Documentação da API](#documentação-da-api)
+- Testes por arquivo REST: [Testes de Rotas com REST Client](#testes-de-rotas-com-rest-client)
 
 ## Integrantes do Grupo
 
@@ -220,6 +241,13 @@ Pré-requisitos:
 - PostgreSQL ativo (local) ou Docker Desktop
 - Docker Desktop em execução com **Linux Engine** (Windows)
 
+Clone do projeto:
+
+```bash
+git clone https://github.com/RogherSoares/SCED-Sistema-de-Controle-de-Entrada-de-Documentos.git
+cd SCED-Sistema-de-Controle-de-Entrada-de-Documentos
+```
+
 Instalação:
 
 ```bash
@@ -231,6 +259,8 @@ Execução em desenvolvimento:
 ```bash
 npm run start:dev
 ```
+
+Ao iniciar, acompanhe o log final para confirmar protocolo e porta em uso.
 
 ### Banco com Docker (recomendado)
 
@@ -263,7 +293,7 @@ As variáveis de conexão já estão no arquivo `.env`:
 - `DB_HOST=localhost`
 - `DB_PORT=5433`
 - `DB_USER=postgres`
-- `DB_PASSWORD=147852369`
+- `DB_PASSWORD=<sua_senha>`
 - `DB_NAME=postgres`
 
 Build de produção:
@@ -320,6 +350,12 @@ HTTPS_KEY_PATH=
 HTTPS_CERT_PATH=
 ```
 
+Checklist recomendado antes de iniciar:
+
+- Definir `JWT_SECRET` forte em ambiente real.
+- Garantir que `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` e `DB_NAME` batem com o PostgreSQL.
+- Se for usar Docker para banco, manter `DB_PORT` alinhada com o `docker-compose.yml`.
+
 ### HTTPS local sem aviso de "conexao nao segura"
 
 Para o navegador remover o aviso, nao basta ativar HTTPS: o certificado precisa ser confiavel na maquina cliente.
@@ -329,20 +365,24 @@ Para o navegador remover o aviso, nao basta ativar HTTPS: o certificado precisa 
 3. Gere certificado com os hosts usados no acesso:
 
 ```bash
-mkcert localhost 127.0.0.1 ::1 192.168.0.100
+mkcert localhost 127.0.0.1 ::1
 ```
 
-4. Preencha no `.env`:
+Se precisar acessar por outro hostname/IP na rede local, inclua esse endereço explicitamente no comando `mkcert`.
+
+1. Preencha no `.env`:
 
 ```env
 HTTPS_ENABLED=true
-HTTPS_KEY_PATH=C:\\caminho\\localhost+3-key.pem
-HTTPS_CERT_PATH=C:\\caminho\\localhost+3.pem
+HTTPS_KEY_PATH=certs/local-key.pem
+HTTPS_CERT_PATH=certs/local-cert.pem
 ```
 
-5. Reinicie a aplicacao e acesse por `https://localhost:3000` (ou pelo IP incluido no certificado).
+1. Reinicie a aplicacao e acesse por `https://localhost:3000` (ou pelo IP incluido no certificado).
 
 Se acessar por IP/host diferente do certificado, o navegador continuara marcando como nao seguro.
+
+Importante: para acesso em outro computador, a CA do `mkcert` tambem precisa estar instalada nesse computador (`mkcert -install`).
 
 ## Documentação da API
 
@@ -350,7 +390,9 @@ Se acessar por IP/host diferente do certificado, o navegador continuara marcando
 
 Base URL local:
 
-- `http://localhost:3000` (ou próxima porta livre, quando 3000 estiver ocupada)
+- `http://localhost:3000` quando `HTTPS_ENABLED=false`
+- `https://localhost:3000` quando `HTTPS_ENABLED=true`
+- Se a porta 3000 estiver ocupada, a aplicação sobe na próxima porta livre (ver log no terminal)
 
 Endpoints principais:
 
@@ -416,8 +458,10 @@ Melhorias recentes no arquivo de testes:
 Fluxo recomendado:
 
 1. Iniciar o back-end com `npm run start:dev`.
-2. Ajustar a variável `@port` no `client.rest` se necessário.
-3. Executar as requisições na ordem do arquivo.
+2. Ajustar a base URL (`http` ou `https`) no `client.rest` conforme o protocolo ativo.
+3. Executar o login (`POST /usuarios/login`) e copiar o `accessToken` retornado.
+4. Enviar `Authorization: Bearer <token>` nas rotas protegidas.
+5. Executar as demais requisições na ordem do arquivo.
 
 ## Mudanças Recentes
 
