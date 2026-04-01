@@ -258,9 +258,17 @@ h2.top-title {
 
 .registro-shell .upload-line {
   width: 108px;
-  height: 3px;
+  height: 8px;
   border-radius: 999px;
-  background: linear-gradient(to right, #94be3e 54%, #b3b3b3 54%);
+  background-color: #d6d6d6;
+  overflow: hidden;
+}
+
+.registro-shell .upload-line-progress {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #2f8a17, #6bcf51);
+  transition: width 0.12s linear;
 }
 
 .registro-shell .bottom-actions {

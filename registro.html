@@ -78,11 +78,12 @@
 
         <div class="card registro-card">
           <div class="card-body">
-            <form action="#" method="POST" class="row g-4">
+            <form id="registroDocumentoForm" class="row g-4">
               <div class="col-lg-4 col-md-6">
                 <label class="form-label">Número de Protocolo</label>
                 <input
                   type="text"
+                  id="registroProtocolo"
                   class="form-control protocolo-input"
                   value="AUTOMÁTICO"
                   readonly
@@ -95,6 +96,7 @@
                 <input
                   type="date"
                   class="form-control"
+                  id="registroDataEntrada"
                   name="data_entrada"
                   required
                 />
@@ -102,15 +104,15 @@
 
               <div class="col-lg-4 col-md-12">
                 <label class="form-label">Tipo de Documento</label>
-                <select class="form-select" name="id_tipo" required>
+                <select
+                  class="form-select"
+                  id="registroTipoDocumento"
+                  name="id_tipo"
+                  required
+                >
                   <option value="" selected disabled>
                     Selecione o tipo ...
                   </option>
-                  <option value="1">Ofício</option>
-                  <option value="2">Memorando</option>
-                  <option value="3">Contrato</option>
-                  <option value="4">Requerimento</option>
-                  <option value="5">Notificação</option>
                 </select>
               </div>
 
@@ -119,6 +121,7 @@
                 <input
                   type="text"
                   class="form-control"
+                  id="registroRemetente"
                   name="remetente"
                   placeholder="Nome da instituição ou órgão de origem"
                   required
@@ -127,10 +130,40 @@
 
               <div class="col-lg-2">
                 <div class="upload-wrap">
-                  <button type="button" class="btn btn-upload">
+                  <button
+                    type="button"
+                    class="btn btn-upload"
+                    id="registroArquivoBtn"
+                  >
                     <i class="bi bi-cloud-upload me-1"></i> Upload Arquivo
                   </button>
-                  <div class="upload-line" aria-hidden="true"></div>
+                  <input
+                    type="file"
+                    id="registroArquivoInput"
+                    class="d-none"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar"
+                  />
+                  <div class="form-text mt-2" id="registroArquivoInfo">
+                    Anexe um arquivo.
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger d-none"
+                    id="registroArquivoRemoverBtn"
+                  >
+                    <i class="bi bi-trash me-1"></i> Excluir arquivo
+                  </button>
+                  <input type="hidden" id="registroArquivoUrl" />
+                  <div
+                    class="upload-line d-none"
+                    id="registroUploadLine"
+                    aria-hidden="true"
+                  >
+                    <div
+                      class="upload-line-progress"
+                      id="registroUploadLineProgress"
+                    ></div>
+                  </div>
                 </div>
               </div>
 
@@ -138,10 +171,15 @@
                 <label class="form-label">Descrição/Assunto</label>
                 <textarea
                   class="form-control"
+                  id="registroDescricao"
                   name="descricao"
                   rows="5"
                   placeholder="Resumo do conteúdo do documento registrado .."
                 ></textarea>
+              </div>
+
+              <div class="col-12">
+                <div id="registroFeedback" class="small d-none"></div>
               </div>
 
               <div class="col-12 bottom-actions">
@@ -163,5 +201,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/index.js"></script>
+    <script src="assets/js/registro.js"></script>
   </body>
 </html>

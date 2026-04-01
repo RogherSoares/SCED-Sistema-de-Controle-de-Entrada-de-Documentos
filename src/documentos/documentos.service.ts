@@ -188,4 +188,34 @@ export class DocumentosService {
       finalizados: byStatus['finalizado'] ?? byStatus['finalizados'] ?? 0,
     };
   }
+
+  async getNextProtocolo() {
+    const anoAtual = new Date().getFullYear();
+
+    const documentosAno = await this.documentosRepository
+      .createQueryBuilder('documento')
+      .select('documento.protocolo', 'protocolo')
+      .where('documento.protocolo LIKE :prefixo', {
+        prefixo: `${anoAtual}.%`,
+      })
+      .getRawMany<{ protocolo: string }>();
+
+    const maiorSequencia = documentosAno.reduce((maior, item) => {
+      const protocolo = item.protocolo || '';
+      const partes = protocolo.split('.');
+      if (partes.length < 2) {
+        return maior;
+      }
+
+      const sequencia = Number(partes[1]);
+      if (!Number.isFinite(sequencia)) {
+        return maior;
+      }
+
+      return Math.max(maior, sequencia);
+    }, 0);
+
+    const proximaSequencia = String(maiorSequencia + 1).padStart(4, '0');
+    return { protocolo: `${anoAtual}.${proximaSequencia}` };
+  }
 }

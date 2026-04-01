@@ -139,6 +139,91 @@ function formatarDataHora(dataIso) {
   return data.toLocaleString('pt-BR');
 }
 
+function obterUrlArquivoSegura(urlArquivo) {
+  const urlOriginal = (urlArquivo || '').toString().trim();
+  const url = urlOriginal.replaceAll('\\', '/');
+  if (!url) {
+    return '';
+  }
+
+  if (url.startsWith('/uploads/')) {
+    return encodeURI(url);
+  }
+
+  if (url.startsWith('uploads/')) {
+    return encodeURI(`/${url}`);
+  }
+
+  if (url.startsWith('./uploads/')) {
+    return encodeURI(`/${url.slice(2)}`);
+  }
+
+  if (url.toLowerCase().startsWith('anexo://')) {
+    const nomeArquivo = url.slice('anexo://'.length).trim();
+    if (!nomeArquivo) {
+      return '';
+    }
+
+    return encodeURI(`/uploads/${nomeArquivo}`);
+  }
+
+  if (url.includes('/uploads/')) {
+    const idx = url.lastIndexOf('/uploads/');
+    return encodeURI(url.slice(idx));
+  }
+
+  const pareceNomeDeArquivo = /^[^/]+\.[a-z0-9]{2,8}$/i.test(url);
+  if (pareceNomeDeArquivo) {
+    return encodeURI(`/uploads/${url}`);
+  }
+
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return encodeURI(urlOriginal);
+  }
+
+  return '';
+}
+
+function obterNomeArquivoDeUrl(url) {
+  const semQuery = (url || '').split('?')[0].split('#')[0];
+  const partes = semQuery.split('/').filter(Boolean);
+  return partes[partes.length - 1] || '';
+}
+
+async function abrirArquivoComFallback(urlArquivo) {
+  const urlPrincipal = obterUrlArquivoSegura(urlArquivo);
+  if (!urlPrincipal) {
+    window.alert('Este documento nao possui link de arquivo valido.');
+    return;
+  }
+
+  const candidatos = [urlPrincipal];
+  const nomeArquivo = obterNomeArquivoDeUrl(urlPrincipal);
+  if (nomeArquivo) {
+    candidatos.push(`/${encodeURIComponent(nomeArquivo)}`);
+  }
+
+  for (const url of candidatos) {
+    try {
+      const head = await fetch(url, {
+        method: 'HEAD',
+        cache: 'no-store',
+      });
+
+      if (head.ok) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+        return;
+      }
+    } catch {
+      // Continua tentando os proximos candidatos.
+    }
+  }
+
+  window.alert(
+    'Arquivo nao encontrado no servidor para este registro antigo. Faca um novo upload do documento para este protocolo.',
+  );
+}
+
 let statusDocumentoCache = [];
 let filtrosDocumentosAtuais = {
   protocolo: '',
@@ -205,9 +290,12 @@ async function carregarTabelaDocumentosDashboard(
 
     const linhas = documentos
       .map((doc) => {
-        const idDocumento = Number(doc.idDocumento);
-        const idStatusAtual = Number((doc.status && doc.status.idStatus) || 0);
-        const protocolo = escapeHtml(doc.protocolo || '-');
+        const idDocumento = Number(doc.idDocumento ?? doc.id_documento ?? 0);
+        const idStatusAtual = Number(
+          (doc.status && (doc.status.idStatus ?? doc.status.id_status)) || 0,
+        );
+        const protocoloBruto = (doc.protocolo || '-').toString();
+        const protocolo = escapeHtml(protocoloBruto);
         const tipo = escapeHtml((doc.tipo && doc.tipo.nomeTipo) || '-');
         const remetente = escapeHtml(doc.remetente || '-');
         const dataEntrada = formatarData(doc.dataEntrada);
@@ -215,6 +303,25 @@ async function carregarTabelaDocumentosDashboard(
           (doc.status && doc.status.nomeStatus) || 'Recebido';
         const statusNome = escapeHtml(statusNomeBruto);
         const statusClasse = obterClasseStatus(statusNomeBruto);
+        const arquivoUrlSegura = obterUrlArquivoSegura(doc.arquivoUrl);
+        const acaoArquivoHtml = arquivoUrlSegura
+          ? `<button
+                class="btn btn-sm btn-outline-success"
+                title="Abrir Arquivo"
+                type="button"
+                data-action="abrir-arquivo"
+                data-arquivo-url="${escapeHtml(arquivoUrlSegura)}"
+              >
+                <i class="bi bi-file-earmark-arrow-down"></i>
+              </button>`
+          : `<button
+                class="btn btn-sm btn-outline-success"
+                title="Sem arquivo anexado"
+                type="button"
+                disabled
+              >
+                <i class="bi bi-file-earmark-arrow-down"></i>
+              </button>`;
 
         return `
           <tr>
@@ -227,22 +334,25 @@ async function carregarTabelaDocumentosDashboard(
               <button
                 class="btn btn-sm btn-outline-primary"
                 title="Ver Histórico"
+                type="button"
                 data-action="historico"
                 data-documento-id="${idDocumento}"
-                data-protocolo="${protocolo}"
+                data-protocolo="${protocoloBruto}"
               >
                 <i class="bi bi-clock-history"></i>
               </button>
               <button
                 class="btn btn-sm btn-outline-secondary"
                 title="Alterar Status"
+                type="button"
                 data-action="alterar-status"
                 data-documento-id="${idDocumento}"
                 data-status-id="${idStatusAtual}"
-                data-protocolo="${protocolo}"
+                data-protocolo="${protocoloBruto}"
               >
                 <i class="bi bi-pencil-square"></i>
               </button>
+              ${acaoArquivoHtml}
             </td>
           </tr>
         `;
@@ -527,14 +637,21 @@ function configurarAcoesTabelaDashboard() {
   }
 
   tableBody.addEventListener('click', async (event) => {
-    const button = event.target.closest('button[data-action]');
-    if (!button) {
+    const targetEl = event.target.closest('[data-action]');
+    if (!targetEl) {
       return;
     }
 
-    const acao = button.getAttribute('data-action');
-    const documentoId = Number(button.getAttribute('data-documento-id'));
-    const protocolo = button.getAttribute('data-protocolo') || 'Documento';
+    const acao = targetEl.getAttribute('data-action');
+
+    if (acao === 'abrir-arquivo') {
+      const urlArquivo = targetEl.getAttribute('data-arquivo-url') || '';
+      await abrirArquivoComFallback(urlArquivo);
+      return;
+    }
+
+    const documentoId = Number(targetEl.getAttribute('data-documento-id'));
+    const protocolo = targetEl.getAttribute('data-protocolo') || 'Documento';
 
     if (!documentoId) {
       return;
@@ -546,7 +663,7 @@ function configurarAcoesTabelaDashboard() {
     }
 
     if (acao === 'alterar-status') {
-      const statusAtualId = Number(button.getAttribute('data-status-id'));
+      const statusAtualId = Number(targetEl.getAttribute('data-status-id'));
       await abrirModalAlterarStatus(documentoId, statusAtualId, protocolo);
     }
   });
