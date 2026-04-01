@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { HistoricoService } from './historico.service';
 import { CreateHistoricoDto } from './dto/create-historico.dto';
@@ -23,6 +24,43 @@ export class HistoricoController {
   @Get()
   findAll() {
     return this.historicoService.findAll();
+  }
+
+  @Get('recentes')
+  findRecentes(@Query('limit') limit?: string) {
+    return this.historicoService.findRecentes(limit ? Number(limit) : 10);
+  }
+
+  @Get('relatorio')
+  findRelatorio(
+    @Query('dataInicio') dataInicio?: string,
+    @Query('dataFim') dataFim?: string,
+    @Query('idTipo') idTipo?: string,
+    @Query('idStatusAtual') idStatusAtual?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.historicoService.findRelatorio({
+      dataInicio,
+      dataFim,
+      idTipo,
+      idStatusAtual,
+      limit: limit ? Number(limit) : undefined,
+    });
+  }
+
+  @Get('indicadores')
+  findIndicadores(
+    @Query('dataInicio') dataInicio?: string,
+    @Query('dataFim') dataFim?: string,
+    @Query('idTipo') idTipo?: string,
+    @Query('idStatusAtual') idStatusAtual?: string,
+  ) {
+    return this.historicoService.findIndicadores({
+      dataInicio,
+      dataFim,
+      idTipo,
+      idStatusAtual,
+    });
   }
 
   @Get('documento/:idDocumento')
