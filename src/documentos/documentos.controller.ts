@@ -25,11 +25,13 @@ export class DocumentosController {
   findAll(
     @Query('protocolo') protocolo?: string,
     @Query('idTipo') idTipo?: string,
+    @Query('idStatus') idStatus?: string,
     @Query('remetente') remetente?: string,
   ) {
     return this.documentosService.findAll({
       protocolo,
       idTipo,
+      idStatus,
       remetente,
     });
   }

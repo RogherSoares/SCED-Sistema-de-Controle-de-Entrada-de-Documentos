@@ -17,6 +17,7 @@ type DashboardMetrics = {
 type DocumentoFilters = {
   protocolo?: string;
   idTipo?: string;
+  idStatus?: string;
   remetente?: string;
 };
 
@@ -87,6 +88,11 @@ export class DocumentosService {
     const idTipo = Number(filters?.idTipo);
     if (Number.isFinite(idTipo) && idTipo > 0) {
       query.andWhere('tipo.id_tipo = :idTipo', { idTipo });
+    }
+
+    const idStatus = Number(filters?.idStatus);
+    if (Number.isFinite(idStatus) && idStatus > 0) {
+      query.andWhere('status.id_status = :idStatus', { idStatus });
     }
 
     return query.getMany();
