@@ -11,7 +11,6 @@ Projeto acadêmico voltado ao controle de entrada, acompanhamento e rastreabilid
 
 ## Informações do Projeto
 
-
 **Projeto:** Sistema de Controle de Entrada de Documentos (SCED)  
 **Disciplina:** Fábrica de Software  
 **Instituição:** Unicesumar Londrina
@@ -45,7 +44,6 @@ Projeto acadêmico voltado ao controle de entrada, acompanhamento e rastreabilid
 - [Licença](#licença)
 
 ## Integrantes do Grupo
-
 
 <table border="1" cellspacing="0" cellpadding="6">
   <thead>
@@ -219,7 +217,7 @@ Pré-requisitos:
 
 - Node.js 20+
 - NPM 10+
-- PostgreSQL ativo
+- PostgreSQL ativo (local) ou Docker Desktop
 
 Instalação:
 
@@ -232,6 +230,40 @@ Execução em desenvolvimento:
 ```bash
 npm run start:dev
 ```
+
+### Banco com Docker (recomendado)
+
+Suba apenas o PostgreSQL via Docker Compose:
+
+```bash
+docker compose up -d db
+```
+
+Verifique se o container está saudável:
+
+```bash
+docker compose ps
+```
+
+Para parar o banco:
+
+```bash
+docker compose stop db
+```
+
+Para derrubar e remover o container (mantendo volume):
+
+```bash
+docker compose down
+```
+
+As variáveis de conexão já estão no arquivo `.env`:
+
+- `DB_HOST=localhost`
+- `DB_PORT=5433`
+- `DB_USER=postgres`
+- `DB_PASSWORD=147852369`
+- `DB_NAME=postgres`
 
 Build de produção:
 
@@ -308,6 +340,10 @@ Endpoints principais:
 - `GET /historicos/:id` buscar histórico
 - `PATCH /historicos/:id` atualizar histórico
 - `DELETE /historicos/:id` remover histórico
+- `POST /documentos/upload` upload de arquivo anexado ao documento
+- `DELETE /documentos/upload?arquivoUrl=...` deletar arquivo upload
+- `GET /documentos/next-protocolo` gerar próximo protocolo (ano.numero)
+- `GET /documentos/metrics/dashboard` métricas para dashboard (recebidos, análise, encaminhados, finalizados)
 
 Validações implementadas:
 
@@ -337,13 +373,74 @@ Fluxo recomendado:
 
 [Voltar ao Sumário](#sumario)
 
+### Sistema de Upload de Arquivos
+
+- **Funcionalidade:** Páginas de registro e consulta agora suportam upload de arquivos anexados ao documento.
+- **Formatos suportados:** PDF, Word (DOC, DOCX), PowerPoint (PPT, PPTX), Excel (XLS, XLSX), imagens (JPG, PNG, GIF), arquivos compactados (ZIP, RAR) e texto (TXT).
+- **Limite de tamanho:** 15 MB por arquivo.
+- **Barra de progresso:** Durante o upload, uma barra visual mostra o progresso em tempo real (0-100%).
+- **Armazenamento:** Arquivos são salvos na pasta `/uploads` com nomes únicos (timestamp + sufixo aleatório).
+- **Endpoints:**
+  - `POST /documentos/upload` - Upload multipart form-data.
+  - `DELETE /documentos/upload?arquivoUrl=...` - Remover arquivo enviado.
+
+### Visualização de Arquivos
+
+- **Funcionalidade:** Links para abrir arquivos em nova aba/janela em todas as páginas de listagem (consulta, dashboard).
+- **Compatibilidade:** Tratamento automático de URLs legadas (formatos antigos como `anexo://`, nomes simples, barras invertidas).
+- **Fallback:** Se arquivo não existir ou URL estiver quebrada, mensagem amigável avisa ao usuário: *"Arquivo não encontrado... faça novo upload..."*.
+- **Segurança:** Validação via HEAD request antes de abrir arquivo.
+
+### Operador Menu
+
+- **Funcionalidade:** Card do operador na página de dashboard agora é clicável e abre um menu flutuante.
+- **Opções:** Menu contém botão para alteração de senha.
+- **Alteração de Senha:**
+  - Modal com campos: senha nova, confirmação de senha.
+  - Validação obrigatória: mínimo 6 caracteres, confirmação deve corresponder.
+  - Endpoint: `PATCH /usuarios/{id}` com payload `{ senha: "nova-senha" }`.
+
+### Página de Consulta (Consulta.html)
+
+- Permite filtrar documentos por protocolo, remetente e status.
+- Exibe tabela com documentos registrados e histórico de movimentação.
+- Botões interativos para cada documento:
+  - **Histórico:** consulta eventos relacionados ao documento.
+  - **Alterar Status:** muda status para (Recebido, Em análise, Encaminhado, Finalizado).
+  - **Visualizar Arquivo:** abre arquivo em nova aba se disponível.
+
+### Dashboard (Index.html)
+
+- Exibe métricas: total de documentos recebidos, em análise, encaminhados e finalizados.
+- Tabela com documentos recentes filtrados por status.
+- Card do operador (clicável) com menu de acesso rápido.
+- Botão para visualizar arquivos anexados (mesma lógica da consulta).
+
+### Protocolo Automático
+
+- Gerado no formato `AAAA.NUMERO` (ex: 2026.0001).
+- Incrementa sequencialmente dentro de cada ano.
+- Campo de protocolo é somente leitura no formulário de registro.
+
+### Banco de Dados PostgreSQL
+
 - CRUDs migrados para persistência real em PostgreSQL com TypeORM.
 - Módulos e serviços atualizados para uso de repositórios.
 - Entidades e relacionamentos definidos para Usuário, Documento, Tipo, Status e Histórico.
-- Validação de payloads habilitada globalmente.
-- Login de usuário em `POST /usuarios/login`.
-- Ajuste no bootstrap para evitar falha por porta ocupada:
-  - Quando a porta configurada estiver em uso, a aplicação sobe automaticamente na próxima porta livre.
+- Sincronização de schema automática (synchronize: true).
+- Carregamento automático de entidades (autoLoadEntities: true).
+
+### Suporte Docker
+
+- Arquivo `docker-compose.yml` com serviço PostgreSQL 16-Alpine.
+- Volume persistente `sced_pgdata` para dados do banco.
+- Healthcheck automático (`pg_isready`).
+- Porta mapeada: container 5432 → host 5433 (conforme `.env`).
+- Variáveis de ambiente pré-configuradas no arquivo `.env`.
+
+### Ajustes Adicionais
+
+- Ajuste no bootstrap para evitar falha por porta ocupada: quando a porta configurada estiver em uso, a aplicação sobe automaticamente na próxima porta livre.
 
 ## Solução de Problemas
 
@@ -355,10 +452,44 @@ Fluxo recomendado:
 - Situação atual: o sistema já possui fallback automático para próxima porta livre.
 - Ação: conferir no log em qual porta a aplicação subiu e atualizar `@port` no `client.rest`.
 
+### Conexão com PostgreSQL Docker
+
+- **Verificar se container está rodando:**
+  ```bash
+  docker ps
+  ```
+
+- **Verificar logs do container:**
+  ```bash
+  docker logs some-postgres
+  ```
+
+- **Conectar com psql (opcional, para debug):**
+  ```bash
+  docker exec -it some-postgres psql -U postgres
+  ```
+
+- **Erros de senha/conexão:**
+  - Confirme que a senha no `.env` (DB_PASSWORD) corresponde à senha do container Docker.
+  - Se criou container com comando manual, certifique-se da porta: deve ser `-p 5433:5432` (host:container).
+
+- **Remover e recriar container com a senha correta:**
+  ```bash
+  docker stop some-postgres
+  docker rm some-postgres
+  docker run --name some-postgres -e POSTGRES_PASSWORD=147852369 -e POSTGRES_USER=postgres -p 5433:5432 -d postgres:16
+  ```
+
 ### Erros de chave única no banco (409/500)
 
 - Causa: reutilização de email/protocolo/tipo/status já existentes.
 - Ação: usar os testes dinâmicos do `client.rest` ou alterar os valores antes de reenviar.
+
+### Arquivo não encontrado ao visualizar
+
+- Mensagem: *"Arquivo não encontrado... faça novo upload..."*
+- Causa: arquivo foi deletado ou URL está quebrada (formato legado não encontrado).
+- Ação: fazer novo upload do arquivo via página de registro.
 
 ## Perfis de Usuário
 
@@ -395,6 +526,10 @@ Funções:
 - **RF06:** Alteração de status (Recebido, Em análise, Encaminhado, Finalizado).
 - **RF07:** Histórico de movimentação.
 - **RF08:** Relatório simples com filtros.
+- **RF09:** Upload de arquivos anexados ao documento com suporte a múltiplos formatos.
+- **RF10:** Visualização de arquivos anexados em nova aba.
+- **RF11:** Menu de operador para alteração de senha.
+- **RF12:** Dashboard com métricas e filtros por status.
 
 ## Requisitos Não Funcionais
 
