@@ -49,6 +49,203 @@ if (logoutLink) {
   });
 }
 
+function criarModalAlterarSenha() {
+  if (document.getElementById('modalAlterarSenhaOperador')) {
+    return;
+  }
+
+  const modalHtml = `
+    <div class="modal fade" id="modalAlterarSenhaOperador" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="alterarSenhaOperadorForm">
+            <div class="modal-header">
+              <h5 class="modal-title fw-bold">Alterar Senha</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="novaSenhaOperador" class="form-label">Nova senha</label>
+                <input type="password" id="novaSenhaOperador" class="form-control" minlength="6" required />
+              </div>
+              <div>
+                <label for="confirmarSenhaOperador" class="form-label">Confirmar nova senha</label>
+                <input type="password" id="confirmarSenhaOperador" class="form-control" minlength="6" required />
+              </div>
+              <div id="alterarSenhaOperadorErro" class="text-danger small mt-2 d-none"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary" id="alterarSenhaOperadorSalvarBtn">Salvar senha</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function configurarMenuOperador() {
+  const operadorCard = document.querySelector('.operator-card');
+  if (!operadorCard || !usuario || !usuario.idUsuario) {
+    return;
+  }
+
+  criarModalAlterarSenha();
+
+  let menuEl = document.getElementById('menuOperadorAcoes');
+  if (!menuEl) {
+    menuEl = document.createElement('div');
+    menuEl.id = 'menuOperadorAcoes';
+    menuEl.className = 'card shadow-sm d-none';
+    menuEl.style.position = 'absolute';
+    menuEl.style.zIndex = '1060';
+    menuEl.style.minWidth = '180px';
+    menuEl.innerHTML = `
+      <div class="list-group list-group-flush">
+        <button type="button" class="list-group-item list-group-item-action" id="menuOperadorAlterarSenhaBtn">
+          <i class="bi bi-key me-2"></i>Alterar senha
+        </button>
+      </div>
+    `;
+    document.body.appendChild(menuEl);
+  }
+
+  const toggleMenu = () => {
+    const rect = operadorCard.getBoundingClientRect();
+    menuEl.style.top = `${rect.bottom + window.scrollY + 6}px`;
+    menuEl.style.left = `${rect.right + window.scrollX - 180}px`;
+    menuEl.classList.toggle('d-none');
+  };
+
+  const fecharMenu = () => menuEl.classList.add('d-none');
+
+  operadorCard.style.cursor = 'pointer';
+  operadorCard.title = 'Clique para abrir menu do operador';
+  operadorCard.addEventListener('click', (event) => {
+    event.stopPropagation();
+    toggleMenu();
+  });
+
+  document.addEventListener('click', (event) => {
+    if (
+      !menuEl.contains(event.target) &&
+      !operadorCard.contains(event.target)
+    ) {
+      fecharMenu();
+    }
+  });
+
+  const menuAlterarSenhaBtn = document.getElementById(
+    'menuOperadorAlterarSenhaBtn',
+  );
+  if (menuAlterarSenhaBtn) {
+    menuAlterarSenhaBtn.addEventListener('click', () => {
+      fecharMenu();
+      const modalEl = document.getElementById('modalAlterarSenhaOperador');
+      const erroEl = document.getElementById('alterarSenhaOperadorErro');
+      const novaSenhaEl = document.getElementById('novaSenhaOperador');
+      const confirmarSenhaEl = document.getElementById(
+        'confirmarSenhaOperador',
+      );
+
+      if (erroEl) {
+        erroEl.textContent = '';
+        erroEl.classList.add('d-none');
+      }
+      if (novaSenhaEl) {
+        novaSenhaEl.value = '';
+      }
+      if (confirmarSenhaEl) {
+        confirmarSenhaEl.value = '';
+      }
+
+      const modal =
+        modalEl && window.bootstrap && window.bootstrap.Modal
+          ? window.bootstrap.Modal.getOrCreateInstance(modalEl)
+          : null;
+      if (modal) {
+        modal.show();
+      }
+    });
+  }
+
+  const alterarSenhaForm = document.getElementById('alterarSenhaOperadorForm');
+  if (alterarSenhaForm) {
+    alterarSenhaForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const novaSenhaEl = document.getElementById('novaSenhaOperador');
+      const confirmarSenhaEl = document.getElementById(
+        'confirmarSenhaOperador',
+      );
+      const erroEl = document.getElementById('alterarSenhaOperadorErro');
+      const salvarBtn = document.getElementById(
+        'alterarSenhaOperadorSalvarBtn',
+      );
+
+      if (!novaSenhaEl || !confirmarSenhaEl || !erroEl || !salvarBtn) {
+        return;
+      }
+
+      const novaSenha = novaSenhaEl.value.trim();
+      const confirmarSenha = confirmarSenhaEl.value.trim();
+
+      if (novaSenha.length < 6) {
+        erroEl.textContent = 'A senha deve ter no minimo 6 caracteres.';
+        erroEl.classList.remove('d-none');
+        return;
+      }
+
+      if (novaSenha !== confirmarSenha) {
+        erroEl.textContent = 'As senhas nao conferem.';
+        erroEl.classList.remove('d-none');
+        return;
+      }
+
+      erroEl.textContent = '';
+      erroEl.classList.add('d-none');
+      salvarBtn.disabled = true;
+      salvarBtn.textContent = 'Salvando...';
+
+      try {
+        const response = await fetch(`/usuarios/${usuario.idUsuario}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ senha: novaSenha }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Nao foi possivel atualizar a senha.');
+        }
+
+        const modalEl = document.getElementById('modalAlterarSenhaOperador');
+        const modal =
+          modalEl && window.bootstrap && window.bootstrap.Modal
+            ? window.bootstrap.Modal.getOrCreateInstance(modalEl)
+            : null;
+        if (modal) {
+          modal.hide();
+        }
+
+        window.alert('Senha alterada com sucesso.');
+      } catch {
+        erroEl.textContent = 'Falha ao alterar senha. Tente novamente.';
+        erroEl.classList.remove('d-none');
+      } finally {
+        salvarBtn.disabled = false;
+        salvarBtn.textContent = 'Salvar senha';
+      }
+    });
+  }
+}
+
+configurarMenuOperador();
+
 async function carregarMetricasDashboard() {
   const metricTotalRecebidos = document.getElementById('metricTotalRecebidos');
   const metricEmAnalise = document.getElementById('metricEmAnalise');

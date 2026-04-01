@@ -388,7 +388,7 @@ Fluxo recomendado:
 
 - **Funcionalidade:** Links para abrir arquivos em nova aba/janela em todas as páginas de listagem (consulta, dashboard).
 - **Compatibilidade:** Tratamento automático de URLs legadas (formatos antigos como `anexo://`, nomes simples, barras invertidas).
-- **Fallback:** Se arquivo não existir ou URL estiver quebrada, mensagem amigável avisa ao usuário: *"Arquivo não encontrado... faça novo upload..."*.
+- **Fallback:** Se arquivo não existir ou URL estiver quebrada, mensagem amigável avisa ao usuário: _"Arquivo não encontrado... faça novo upload..."_.
 - **Segurança:** Validação via HEAD request antes de abrir arquivo.
 
 ### Operador Menu
@@ -455,16 +455,19 @@ Fluxo recomendado:
 ### Conexão com PostgreSQL Docker
 
 - **Verificar se container está rodando:**
+
   ```bash
   docker ps
   ```
 
 - **Verificar logs do container:**
+
   ```bash
   docker logs some-postgres
   ```
 
 - **Conectar com psql (opcional, para debug):**
+
   ```bash
   docker exec -it some-postgres psql -U postgres
   ```
@@ -487,7 +490,7 @@ Fluxo recomendado:
 
 ### Arquivo não encontrado ao visualizar
 
-- Mensagem: *"Arquivo não encontrado... faça novo upload..."*
+- Mensagem: _"Arquivo não encontrado... faça novo upload..."_
 - Causa: arquivo foi deletado ou URL está quebrada (formato legado não encontrado).
 - Ação: fazer novo upload do arquivo via página de registro.
 
@@ -781,6 +784,10 @@ Valores possíveis: Recebido, Em análise, Encaminhado e Finalizado.
 ## Licença
 
 [Voltar ao Sumário](#sumario)
+
+Este projeto está licenciado sob os termos da licença MIT.
+
+Consulte o arquivo `LICENSE` para mais detalhes.
 
 Este projeto está licenciado sob os termos da licença MIT.
 
