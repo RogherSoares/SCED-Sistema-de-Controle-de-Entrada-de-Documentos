@@ -11,6 +11,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { Public } from '../auth/public.decorator';
 import { mkdirSync } from 'node:fs';
 import { unlink } from 'node:fs/promises';
 import { basename, extname, join } from 'node:path';
@@ -51,6 +52,7 @@ export class DocumentosController {
       limits: { fileSize: 15 * 1024 * 1024 },
     }),
   )
+  @Public()
   uploadArquivo(@UploadedFile() file: any) {
     if (!file) {
       throw new BadRequestException('Nenhum arquivo foi enviado.');
@@ -90,6 +92,7 @@ export class DocumentosController {
   }
 
   @Delete('upload')
+  @Public()
   async removerArquivoUpload(@Query('arquivoUrl') arquivoUrl?: string) {
     if (!arquivoUrl) {
       throw new BadRequestException('URL do arquivo nao informada.');

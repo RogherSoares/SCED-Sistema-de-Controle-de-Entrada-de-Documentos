@@ -1,5 +1,7 @@
+import 'dotenv/config';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { readFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { join } from 'node:path';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -17,7 +19,7 @@ function isPortAvailable(port: number): Promise<boolean> {
       server.close(() => resolve(true));
     });
 
-    server.listen(port, '0.0.0.0');
+    server.listen(port);
   });
 }
 
@@ -32,7 +34,27 @@ async function getAvailablePort(preferredPort: number): Promise<number> {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const httpsEnabled = process.env.HTTPS_ENABLED === 'true';
+  const httpsKeyPath = process.env.HTTPS_KEY_PATH;
+  const httpsCertPath = process.env.HTTPS_CERT_PATH;
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    ...(httpsEnabled && httpsKeyPath && httpsCertPath
+      ? {
+          httpsOptions: {
+            key: readFileSync(httpsKeyPath),
+            cert: readFileSync(httpsCertPath),
+          },
+        }
+      : {}),
+  });
+
+  if (httpsEnabled && (!httpsKeyPath || !httpsCertPath)) {
+    console.warn(
+      'HTTPS habilitado sem caminho de chave/certificado. Iniciando em HTTP.',
+    );
+  }
+
   app.useStaticAssets(join(process.cwd()), { index: false });
   app.enableCors({ origin: true, credentials: true });
   app.useGlobalPipes(
@@ -53,6 +75,10 @@ async function bootstrap() {
   }
 
   await app.listen(availablePort);
+
+  const protocolo =
+    httpsEnabled && httpsKeyPath && httpsCertPath ? 'https' : 'http';
+  console.log(`Servidor iniciado em ${protocolo}://localhost:${availablePort}`);
 }
 
 void bootstrap();

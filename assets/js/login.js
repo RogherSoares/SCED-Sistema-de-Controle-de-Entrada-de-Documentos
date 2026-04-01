@@ -2,7 +2,10 @@ const loginForm = document.getElementById('loginForm');
 const loginAlert = document.getElementById('loginAlert');
 const loginButton = document.getElementById('loginButton');
 
-const usuarioLogado = sessionStorage.getItem('scedUser');
+const usuarioLogado =
+  window.scedAuth && window.scedAuth.getCurrentUser
+    ? window.scedAuth.getCurrentUser()
+    : null;
 if (usuarioLogado) {
   window.location.href = 'index.html';
 }
@@ -30,8 +33,12 @@ loginForm.addEventListener('submit', async (event) => {
       throw new Error('Email ou senha invalidos.');
     }
 
-    const usuario = await response.json();
-    sessionStorage.setItem('scedUser', JSON.stringify(usuario));
+    const authPayload = await response.json();
+    if (!window.scedAuth || !window.scedAuth.setCurrentUser) {
+      throw new Error('Inicializacao de autenticacao indisponivel.');
+    }
+
+    window.scedAuth.setCurrentUser(authPayload);
     window.location.href = 'index.html';
   } catch (error) {
     loginAlert.textContent =

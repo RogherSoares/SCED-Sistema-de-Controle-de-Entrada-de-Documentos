@@ -1,9 +1,6 @@
-version: '3.9'
-
 services:
   db:
     image: postgres:16-alpine
-    container_name: some-postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME:-postgres}

@@ -1,10 +1,10 @@
-const usuarioSession = sessionStorage.getItem('scedUser');
-let usuario = null;
+const usuario =
+  window.scedAuth && window.scedAuth.getCurrentUser
+    ? window.scedAuth.getCurrentUser()
+    : null;
 
-if (!usuarioSession) {
+if (!usuario) {
   window.location.href = 'login.html';
-} else {
-  usuario = JSON.parse(usuarioSession);
 }
 
 const operatorName = document.getElementById('operatorName');
@@ -45,6 +45,11 @@ if (operatorPerfil && usuario) {
 const logoutLink = document.getElementById('logoutLink');
 if (logoutLink) {
   logoutLink.addEventListener('click', () => {
+    if (window.scedAuth && window.scedAuth.clearSession) {
+      window.scedAuth.clearSession();
+      return;
+    }
+
     sessionStorage.removeItem('scedUser');
   });
 }

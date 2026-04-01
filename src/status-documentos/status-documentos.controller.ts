@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { Roles } from '../auth/roles.decorator';
 import { StatusDocumentosService } from './status-documentos.service';
 import { CreateStatusDocumentoDto } from './dto/create-status-documento.dto';
 import { UpdateStatusDocumentoDto } from './dto/update-status-documento.dto';
@@ -17,6 +18,7 @@ export class StatusDocumentosController {
     private readonly statusDocumentosService: StatusDocumentosService,
   ) {}
 
+  @Roles('admin')
   @Post()
   create(@Body() createStatusDocumentoDto: CreateStatusDocumentoDto) {
     return this.statusDocumentosService.create(createStatusDocumentoDto);
@@ -32,6 +34,7 @@ export class StatusDocumentosController {
     return this.statusDocumentosService.findOne(+id);
   }
 
+  @Roles('admin')
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -40,6 +43,7 @@ export class StatusDocumentosController {
     return this.statusDocumentosService.update(+id, updateStatusDocumentoDto);
   }
 
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.statusDocumentosService.remove(+id);

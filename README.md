@@ -218,6 +218,7 @@ Pré-requisitos:
 - Node.js 20+
 - NPM 10+
 - PostgreSQL ativo (local) ou Docker Desktop
+- Docker Desktop em execução com **Linux Engine** (Windows)
 
 Instalação:
 
@@ -291,6 +292,14 @@ Variáveis de ambiente suportadas:
 - `DB_USER` (padrão: postgres)
 - `DB_PASSWORD` (padrão: sua senha)
 - `DB_NAME` (padrão: postgres)
+- `DB_SSL` (`true` para TLS no PostgreSQL)
+- `DB_SSL_REJECT_UNAUTHORIZED` (`false` em ambiente de dev com certificado self-signed)
+- `JWT_SECRET` (segredo de assinatura do token JWT)
+- `JWT_EXPIRES_IN` (padrão: `1d`)
+- `BCRYPT_SALT_ROUNDS` (padrão: `12`)
+- `HTTPS_ENABLED` (`true` para subir o NestJS com HTTPS)
+- `HTTPS_KEY_PATH` (caminho absoluto da chave privada `.key`)
+- `HTTPS_CERT_PATH` (caminho absoluto do certificado `.pem`/`.crt`)
 
 Exemplo de `.env`:
 
@@ -301,7 +310,39 @@ DB_PORT=5433
 DB_USER=postgres
 DB_PASSWORD=sua senha
 DB_NAME=postgres
+DB_SSL=false
+DB_SSL_REJECT_UNAUTHORIZED=true
+JWT_SECRET=troque-este-segredo-em-producao
+JWT_EXPIRES_IN=1d
+BCRYPT_SALT_ROUNDS=12
+HTTPS_ENABLED=false
+HTTPS_KEY_PATH=
+HTTPS_CERT_PATH=
 ```
+
+### HTTPS local sem aviso de "conexao nao segura"
+
+Para o navegador remover o aviso, nao basta ativar HTTPS: o certificado precisa ser confiavel na maquina cliente.
+
+1. Instale o `mkcert` no Windows.
+2. Rode `mkcert -install` para instalar a CA local confiavel.
+3. Gere certificado com os hosts usados no acesso:
+
+```bash
+mkcert localhost 127.0.0.1 ::1 192.168.0.100
+```
+
+4. Preencha no `.env`:
+
+```env
+HTTPS_ENABLED=true
+HTTPS_KEY_PATH=C:\\caminho\\localhost+3-key.pem
+HTTPS_CERT_PATH=C:\\caminho\\localhost+3.pem
+```
+
+5. Reinicie a aplicacao e acesse por `https://localhost:3000` (ou pelo IP incluido no certificado).
+
+Se acessar por IP/host diferente do certificado, o navegador continuara marcando como nao seguro.
 
 ## Documentação da API
 
@@ -314,7 +355,7 @@ Base URL local:
 Endpoints principais:
 
 - `GET /` health check
-- `POST /usuarios/login` autenticação simples por email/senha
+- `POST /usuarios/login` autenticação por email/senha com retorno de token JWT
 - `POST /usuarios` criar usuário
 - `GET /usuarios` listar usuários
 - `GET /usuarios/:id` buscar usuário
@@ -344,6 +385,15 @@ Endpoints principais:
 - `DELETE /documentos/upload?arquivoUrl=...` deletar arquivo upload
 - `GET /documentos/next-protocolo` gerar próximo protocolo (ano.numero)
 - `GET /documentos/metrics/dashboard` métricas para dashboard (recebidos, análise, encaminhados, finalizados)
+
+Autenticação e autorização:
+
+- Rotas protegidas exigem header `Authorization: Bearer <token>`.
+- Rotas públicas atuais: `GET /`, `POST /usuarios/login`, `POST /usuarios`.
+- As senhas são armazenadas com hash `bcrypt`.
+- Front-end envia o token automaticamente após login (via script `assets/js/auth.js`).
+- Endpoints de administração de usuários/listagem e remoção exigem perfil `admin`.
+- Cadastro/edição/exclusão de tipos e status de documento exigem perfil `admin`.
 
 Validações implementadas:
 
@@ -463,13 +513,13 @@ Fluxo recomendado:
 - **Verificar logs do container:**
 
   ```bash
-  docker logs some-postgres
+  docker compose logs db
   ```
 
 - **Conectar com psql (opcional, para debug):**
 
   ```bash
-  docker exec -it some-postgres psql -U postgres
+  docker compose exec db psql -U postgres
   ```
 
 - **Erros de senha/conexão:**
@@ -477,10 +527,10 @@ Fluxo recomendado:
   - Se criou container com comando manual, certifique-se da porta: deve ser `-p 5433:5432` (host:container).
 
 - **Remover e recriar container com a senha correta:**
+
   ```bash
-  docker stop some-postgres
-  docker rm some-postgres
-  docker run --name some-postgres -e POSTGRES_PASSWORD=147852369 -e POSTGRES_USER=postgres -p 5433:5432 -d postgres:16
+  docker compose down
+  docker compose up -d
   ```
 
 ### Erros de chave única no banco (409/500)
@@ -784,10 +834,6 @@ Valores possíveis: Recebido, Em análise, Encaminhado e Finalizado.
 ## Licença
 
 [Voltar ao Sumário](#sumario)
-
-Este projeto está licenciado sob os termos da licença MIT.
-
-Consulte o arquivo `LICENSE` para mais detalhes.
 
 Este projeto está licenciado sob os termos da licença MIT.
 
