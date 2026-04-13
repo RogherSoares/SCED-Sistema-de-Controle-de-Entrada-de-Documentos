@@ -49,7 +49,7 @@ Projeto acadêmico voltado ao controle de entrada, acompanhamento e rastreabilid
 ## Guia Rápido (Clone até Primeiro Login)
 
 
-Use este bloco apenas como checklist. O passo a passo completo está nas seções abaixo.
+Use este bloco apenas como checklist. O passo a passo está completo nas seções abaixo.
 
 1. Clone e instale as dependências.
 2. Suba o PostgreSQL (Docker ou instância local).
