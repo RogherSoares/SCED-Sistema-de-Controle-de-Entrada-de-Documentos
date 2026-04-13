@@ -23,7 +23,7 @@ h2.top-title {
   max-width: var(--sidebar-width);
   background-color: #212529;
   color: white;
-  transition: all 0.3s;
+  transition: all 0.4s;
   display: flex;
   flex-direction: column;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
@@ -39,7 +39,7 @@ h2.top-title {
 .nav-link {
   color: #adb5bd !important;
   padding: 12px 20px;
-  transition: 0.2s;
+  transition: 0.3s;
   display: flex;
   align-items: center;
 }
