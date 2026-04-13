@@ -820,7 +820,7 @@ O MER representa a estrutura de dados do SCED e define as entidades principais (
   </tbody>
 </table>
 
-Valores possíveis: Recebido, Em análise, Encaminhado e Finalizado.
+Valores que são possíveis: Recebido, Em análise, Encaminhado e Finalizado.
 
 ### Tabela: Histórico
 
