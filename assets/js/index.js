@@ -278,6 +278,13 @@ async function carregarMetricasDashboard() {
     metricEmAnalise.textContent = String(metrics.emAnalise ?? 0);
     metricEncaminhados.textContent = String(metrics.encaminhados ?? 0);
     metricFinalizados.textContent = String(metrics.finalizados ?? 0);
+
+    renderizarGraficoDashboard({
+  recebidos: metrics.totalRecebidos ?? 0,
+  emAnalise: metrics.emAnalise ?? 0,
+  encaminhados: metrics.encaminhados ?? 0,
+  finalizados: metrics.finalizados ?? 0
+});
   } catch {
     metricTotalRecebidos.textContent = '0';
     metricEmAnalise.textContent = '0';
@@ -910,6 +917,45 @@ async function carregarTiposDocumentoFiltro() {
     filtroTipoDocumento.innerHTML =
       '<option selected disabled value="">Tipo de Documento</option>';
   }
+}
+    let graficoInstance = null;
+
+function renderizarGraficoDashboard(dados) {
+  const ctx = document.getElementById('graficoDashboard');
+
+  if (!ctx) return;
+
+  if (graficoInstance) {
+    graficoInstance.destroy();
+  }
+
+  graficoInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Recebidos', 'Em Análise', 'Encaminhados', 'Finalizados'],
+      datasets: [
+        {
+          label: 'Quantidade',
+          data: [
+            dados.recebidos,
+            dados.emAnalise,
+            dados.encaminhados,
+            dados.finalizados
+          ],
+          borderRadius: 6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
 }
 
 void carregarTiposDocumentoFiltro();
