@@ -924,6 +924,7 @@ function renderizarGraficoDashboard(dados) {
   const ctx = document.getElementById('graficoDashboard');
 
   if (!ctx) return;
+  if (typeof Chart === 'undefined') return;
 
   if (graficoInstance) {
     graficoInstance.destroy();
