@@ -280,11 +280,11 @@ async function carregarMetricasDashboard() {
     metricFinalizados.textContent = String(metrics.finalizados ?? 0);
 
     renderizarGraficoDashboard({
-  recebidos: metrics.totalRecebidos ?? 0,
-  emAnalise: metrics.emAnalise ?? 0,
-  encaminhados: metrics.encaminhados ?? 0,
-  finalizados: metrics.finalizados ?? 0
-});
+      recebidos: metrics.totalRecebidos ?? 0,
+      emAnalise: metrics.emAnalise ?? 0,
+      encaminhados: metrics.encaminhados ?? 0,
+      finalizados: metrics.finalizados ?? 0,
+    });
   } catch {
     metricTotalRecebidos.textContent = '0';
     metricEmAnalise.textContent = '0';
@@ -491,7 +491,7 @@ async function carregarTabelaDocumentosDashboard(
     if (!Array.isArray(documentos) || documentos.length === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="6" class="text-center py-4 text-muted">Nenhum documento encontrado.</td>
+          <td colspan="5" class="text-center py-4 text-muted">Nenhum documento encontrado.</td>
         </tr>
       `;
       return;
@@ -499,12 +499,7 @@ async function carregarTabelaDocumentosDashboard(
 
     const linhas = documentos
       .map((doc) => {
-        const idDocumento = Number(doc.idDocumento ?? doc.id_documento ?? 0);
-        const idStatusAtual = Number(
-          (doc.status && (doc.status.idStatus ?? doc.status.id_status)) || 0,
-        );
-        const protocoloBruto = (doc.protocolo || '-').toString();
-        const protocolo = escapeHtml(protocoloBruto);
+        const protocolo = escapeHtml((doc.protocolo || '-').toString());
         const tipo = escapeHtml((doc.tipo && doc.tipo.nomeTipo) || '-');
         const remetente = escapeHtml(doc.remetente || '-');
         const dataEntrada = formatarData(doc.dataEntrada);
@@ -512,25 +507,6 @@ async function carregarTabelaDocumentosDashboard(
           (doc.status && doc.status.nomeStatus) || 'Recebido';
         const statusNome = escapeHtml(statusNomeBruto);
         const statusClasse = obterClasseStatus(statusNomeBruto);
-        const arquivoUrlSegura = obterUrlArquivoSegura(doc.arquivoUrl);
-        const acaoArquivoHtml = arquivoUrlSegura
-          ? `<button
-                class="btn btn-sm btn-outline-success"
-                title="Abrir Arquivo"
-                type="button"
-                data-action="abrir-arquivo"
-                data-arquivo-url="${escapeHtml(arquivoUrlSegura)}"
-              >
-                <i class="bi bi-file-earmark-arrow-down"></i>
-              </button>`
-          : `<button
-                class="btn btn-sm btn-outline-success"
-                title="Sem arquivo anexado"
-                type="button"
-                disabled
-              >
-                <i class="bi bi-file-earmark-arrow-down"></i>
-              </button>`;
 
         return `
           <tr>
@@ -539,30 +515,6 @@ async function carregarTabelaDocumentosDashboard(
             <td>${remetente}</td>
             <td>${dataEntrada}</td>
             <td><span class="badge ${statusClasse} status-badge">${statusNome}</span></td>
-            <td class="text-center">
-              <button
-                class="btn btn-sm btn-outline-primary"
-                title="Ver Histórico"
-                type="button"
-                data-action="historico"
-                data-documento-id="${idDocumento}"
-                data-protocolo="${protocoloBruto}"
-              >
-                <i class="bi bi-clock-history"></i>
-              </button>
-              <button
-                class="btn btn-sm btn-outline-secondary"
-                title="Alterar Status"
-                type="button"
-                data-action="alterar-status"
-                data-documento-id="${idDocumento}"
-                data-status-id="${idStatusAtual}"
-                data-protocolo="${protocoloBruto}"
-              >
-                <i class="bi bi-pencil-square"></i>
-              </button>
-              ${acaoArquivoHtml}
-            </td>
           </tr>
         `;
       })
@@ -572,7 +524,7 @@ async function carregarTabelaDocumentosDashboard(
   } catch {
     tableBody.innerHTML = `
       <tr>
-        <td colspan="6" class="text-center py-4 text-muted">Nao foi possivel carregar os documentos.</td>
+        <td colspan="5" class="text-center py-4 text-muted">Nao foi possivel carregar os documentos.</td>
       </tr>
     `;
   }
@@ -918,7 +870,7 @@ async function carregarTiposDocumentoFiltro() {
       '<option selected disabled value="">Tipo de Documento</option>';
   }
 }
-    let graficoInstance = null;
+let graficoInstance = null;
 
 function renderizarGraficoDashboard(dados) {
   const ctx = document.getElementById('graficoDashboard');
@@ -940,7 +892,7 @@ function renderizarGraficoDashboard(dados) {
             dados.recebidos,
             dados.emAnalise,
             dados.encaminhados,
-            dados.finalizados
+            dados.finalizados,
           ],
           borderRadius: 6,
         },
@@ -949,12 +901,12 @@ function renderizarGraficoDashboard(dados) {
     options: {
       responsive: true,
       plugins: {
-        legend: { display: false }
+        legend: { display: false },
       },
       scales: {
-        y: { beginAtZero: true }
-      }
-    }
+        y: { beginAtZero: true },
+      },
+    },
   });
 }
 
