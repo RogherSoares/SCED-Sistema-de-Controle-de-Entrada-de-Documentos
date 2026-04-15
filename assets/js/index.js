@@ -278,7 +278,7 @@ async function carregarMetricasDashboard() {
     metricEmAnalise.textContent = String(metrics.emAnalise ?? 0);
     metricEncaminhados.textContent = String(metrics.encaminhados ?? 0);
     metricFinalizados.textContent = String(metrics.finalizados ?? 0);
-
+// gráfico dashboard implementado
     renderizarGraficoDashboard({
       recebidos: metrics.totalRecebidos ?? 0,
       emAnalise: metrics.emAnalise ?? 0,
@@ -876,6 +876,7 @@ function renderizarGraficoDashboard(dados) {
   const ctx = document.getElementById('graficoDashboard');
 
   if (!ctx) return;
+  if (typeof Chart === 'undefined') return;
 
   if (graficoInstance) {
     graficoInstance.destroy();
