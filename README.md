@@ -875,6 +875,18 @@ Valores que são possíveis: Recebido, Em análise, Encaminhado e Finalizado.
 ![Relatório](assets/img/Relatorios%20SCED.png)
 ![Gerenciamento de Usuários](assets/img/Gerenciamento%20Usuarios%20SCED.png)
 
+## Conclusões dos Testes
+
+Os testes realizados no sistema SCED confirmaram que as principais funcionalidades estão funcionando corretamente. Aqui estão os destaques:
+
+- **Autenticação e Controle de Acesso**: O sistema redireciona usuários não autenticados para a página de login e restringe o acesso a funcionalidades administrativas para usuários com perfil de administrador.
+- **Dashboard**: As métricas são carregadas corretamente e exibem os dados atualizados do sistema.
+- **Registro e Consulta de Documentos**: As funcionalidades de registro, consulta e alteração de status de documentos estão operando conforme esperado.
+- **Histórico de Movimentação**: O histórico de movimentação dos documentos é exibido corretamente, com todas as informações relevantes.
+- **Relatórios**: A geração de relatórios está funcionando e os arquivos são gerados no formato esperado.
+
+Os testes foram realizados tanto de forma manual quanto automatizada, e o sistema demonstrou estabilidade e conformidade com os requisitos definidos.
+
 ## Licença
 
 [Voltar ao Sumário](#sumario)
