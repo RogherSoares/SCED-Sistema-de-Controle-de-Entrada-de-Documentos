@@ -616,8 +616,8 @@ Funções:
 [Voltar ao Sumário](#sumario)
 
 - **RF01:** Cadastro de usuários (Administrador e Operador).
-- **RF02:** Login com autenticação.
-- **RF03:** Cadastro de tipos de documentos.
+- **RF02:** Login com autenticação de dois fatores (Confirmação via e-mail).
+- **RF03:** Cadastro de tipos de documentos(PDF, Word (DOC, DOCX), PowerPoint (PPT, PPTX), Excel (XLS, XLSX), imagens (JPG, PNG, GIF), arquivos compactados (ZIP, RAR) e texto (TXT)).
 - **RF04:** Registro de entrada de documentos com protocolo automático.
 - **RF05:** Consulta por protocolo, remetente, tipo e período.
 - **RF06:** Alteração de status (Recebido, Em análise, Encaminhado, Finalizado).
