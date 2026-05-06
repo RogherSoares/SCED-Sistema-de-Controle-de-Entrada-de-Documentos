@@ -617,13 +617,13 @@ Funções:
 
 - **RF01:** Cadastro de usuários (Administrador e Operador).
 - **RF02:** Login com autenticação de dois fatores (Confirmação via e-mail).
-- **RF03:** Cadastro de tipos de documentos(PDF, Word (DOC, DOCX), PowerPoint (PPT, PPTX), Excel (XLS, XLSX), imagens (JPG, PNG, GIF), arquivos compactados (ZIP, RAR) e texto (TXT)).
+- **RF03:** Cadastro de tipos de documentos (Exemplo:certificado de cursos, comprovante de residência).
 - **RF04:** Registro de entrada de documentos com protocolo automático.
 - **RF05:** Consulta por protocolo, remetente, tipo e período.
 - **RF06:** Alteração de status (Recebido, Em análise, Encaminhado, Finalizado).
 - **RF07:** Histórico de movimentação.
 - **RF08:** Relatório simples com filtros.
-- **RF09:** Upload de arquivos anexados ao documento com suporte a múltiplos formatos.
+- **RF09:** Upload de arquivos anexados ao documento com suporte a múltiplos formatos (PDF, Word (DOC, DOCX), PowerPoint (PPT, PPTX), Excel (XLS, XLSX), imagens (JPG, PNG, GIF), arquivos compactados (ZIP, RAR) e texto (TXT)).
 - **RF10:** Visualização de arquivos anexados em nova aba.
 - **RF11:** Menu de operador para alteração de senha.
 - **RF12:** Dashboard com métricas e filtros por status.
