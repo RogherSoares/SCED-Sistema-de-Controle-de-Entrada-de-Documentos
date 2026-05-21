@@ -592,14 +592,14 @@ Funções:
 [Voltar ao Sumário](#sumario)
 
 - **RF01:** Cadastro de usuários (Administrador e Operador).
-- **RF02:** Login com autenticação.
-- **RF03:** Cadastro de tipos de documentos.
+- **RF02:** Login com autenticação de dois fatores (Confirmação via e-mail).
+- **RF03:** Cadastro de tipos de documentos (Exemplo:certificado de cursos, comprovante de residência).
 - **RF04:** Registro de entrada de documentos com protocolo automático.
 - **RF05:** Consulta por protocolo, remetente, tipo e período.
 - **RF06:** Alteração de status (Recebido, Em análise, Encaminhado, Finalizado).
 - **RF07:** Histórico de movimentação.
 - **RF08:** Relatório simples com filtros.
-- **RF09:** Upload de arquivos anexados ao documento com suporte a múltiplos formatos.
+- **RF09:** Upload de arquivos anexados ao documento com suporte a múltiplos formatos (PDF, Word (DOC, DOCX), PowerPoint (PPT, PPTX), Excel (XLS, XLSX), imagens (JPG, PNG, GIF), arquivos compactados (ZIP, RAR) e texto (TXT)).
 - **RF10:** Visualização de arquivos anexados em nova aba.
 - **RF11:** Menu de operador para alteração de senha.
 - **RF12:** Dashboard com métricas e filtros por status.
@@ -614,6 +614,30 @@ Funções:
 - **RNF04:** Versionamento no GitHub.
 - **RNF05:** Interface amigável.
 - **RNF06:** Registro de logs.
+
+## Análise de Conformidade entre código e README
+
+[Voltar ao Sumário](#sumario)
+
+- **RF01:** cadastro de usuários está implementado no back-end com criação e proteção por perfil.
+- **RF02:** autenticação de dois fatores por e-mail **não está implementada** no código atual; o login usa apenas email/senha e JWT.
+- **RF03:** cadastro de tipos de documento está presente e upload aceita muitos formatos de arquivo.
+- **RF04:** protocolo automático está implementado em `GET /documentos/next-protocolo` com formato `AAAA.NNNN`.
+- **RF05:** consulta por protocolo, remetente, tipo e status está implementada, mas **falta filtro por período** em `GET /documentos`.
+- **RF06:** alteração de status está disponível via `PATCH /documentos/:id`.
+- **RF07:** histórico de movimentação está implementado no módulo `historico`.
+- **RF08:** filtros de relatório existem no serviço de histórico, incluindo data, tipo e status.
+- **RF09:** upload de arquivos anexados está implementado com limite de 15 MB e exclusão de arquivo.
+- **RF10:** arquivos em `/uploads` podem ser servidos pelo servidor, compatível com visualização em nova aba.
+- **RF11:** alteração de senha de operador é possível via `PATCH /usuarios/:id`.
+- **RF12:** dashboard de métricas está disponível em `GET /documentos/metrics/dashboard`.
+
+### Observações técnicas
+
+- O controle de acesso por perfil está ativo com `JwtAuthGuard` e `RolesGuard` no módulo principal.
+- O banco relacional PostgreSQL está configurado em `src/app/app.module.ts` com TypeORM.
+- Logging existe apenas como `console.log`/`console.warn` em `src/main.ts`; não há sistema de logs avançado.
+- A funcionalidade de autenticação de dois fatores mencionada no README não está presente e deve ser implementada separadamente.
 
 ## Requisitos de Interface
 
