@@ -16,11 +16,11 @@ import { UsuariosModule } from '../usuarios/usuarios.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST ?? 'localhost',
-      port: Number(process.env.DB_PORT ?? 5433),
-      username: process.env.DB_USER ?? 'postgres',
-      database: process.env.DB_NAME ?? 'postgres',
-      password: process.env.DB_PASSWORD ?? '147852369',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT ?? 5432),
+      username: process.env.DB_USER,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
       ssl:
         process.env.DB_SSL === 'true'
           ? {

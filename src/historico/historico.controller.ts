@@ -8,10 +8,12 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { HistoricoService } from './historico.service';
 import { CreateHistoricoDto } from './dto/create-historico.dto';
 import { UpdateHistoricoDto } from './dto/update-historico.dto';
 
+@ApiTags('Historico')
 @Controller('historicos')
 export class HistoricoController {
   constructor(private readonly historicoService: HistoricoService) {}

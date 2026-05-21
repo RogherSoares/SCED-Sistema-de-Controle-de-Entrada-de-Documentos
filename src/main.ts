@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { join } from 'node:path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -56,7 +57,12 @@ async function bootstrap() {
   }
 
   app.useStaticAssets(join(process.cwd()), { index: false });
-  app.enableCors({ origin: true, credentials: true });
+  app.enableCors({
+    origin: true,
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization',
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -64,6 +70,18 @@ async function bootstrap() {
       forbidNonWhitelisted: false,
     }),
   );
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('SCED API')
+    .setDescription(
+      'API do Sistema de Controle de Entrada de Documentos (SCED).',
+    )
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, swaggerDocument);
 
   const preferredPort = Number(process.env.PORT ?? 3000);
   const availablePort = await getAvailablePort(preferredPort);

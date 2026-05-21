@@ -48,11 +48,10 @@ Projeto acadêmico voltado ao controle de entrada, acompanhamento e rastreabilid
 
 ## Guia Rápido (Clone até Primeiro Login)
 
-
 Use este bloco apenas como checklist. O passo a passo está completo nas seções abaixo.
 
 1. Clone e instale as dependências.
-2. Suba o PostgreSQL (Docker ou instância local).
+2. Tenha o PostgreSQL local em execução.
 3. Configure o ambiente no arquivo .env.
 4. Inicie com npm run start:dev.
 5. Acesse login.html, crie o primeiro admin e faça login.
@@ -230,6 +229,14 @@ Todos os CRUDs acima já estão conectados ao banco de dados via repositórios T
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" />
 </p>
 
+## Integrações de API
+
+[Voltar ao Sumário](#sumario)
+
+- CORS já está habilitado no bootstrap para permitir acesso do front-end e de ferramentas como o Swagger UI.
+- A documentação interativa da API fica disponível em `/api/docs` quando o servidor estiver em execução.
+- O Swagger inclui autenticação por bearer token e os principais DTOs de entrada do sistema.
+
 ## Como Executar o Projeto
 
 [Voltar ao Sumário](#sumario)
@@ -238,8 +245,7 @@ Pré-requisitos:
 
 - Node.js 20+
 - NPM 10+
-- PostgreSQL ativo (local) ou Docker Desktop
-- Docker Desktop em execução com **Linux Engine** (Windows)
+- PostgreSQL ativo localmente na porta configurada no `.env`
 
 Clone do projeto:
 
@@ -262,36 +268,16 @@ npm run start:dev
 
 Ao iniciar, acompanhe o log final para confirmar protocolo e porta em uso.
 
-### Banco com Docker (recomendado)
+Abra a documentação interativa em `/api/docs` usando o mesmo protocolo e porta do log, por exemplo `http://localhost:3000/api/docs` ou `https://localhost:3000/api/docs`.
 
-Suba apenas o PostgreSQL via Docker Compose:
+### Banco local
 
-```bash
-docker compose up -d db
-```
-
-Verifique se o container está saudável:
-
-```bash
-docker compose ps
-```
-
-Para parar o banco:
-
-```bash
-docker compose stop db
-```
-
-Para derrubar e remover o container (mantendo volume):
-
-```bash
-docker compose down
-```
+Garanta que o serviço do PostgreSQL esteja ativo na máquina local e que o banco configurado exista.
 
 As variáveis de conexão já estão no arquivo `.env`:
 
 - `DB_HOST=localhost`
-- `DB_PORT=5433`
+- `DB_PORT=5432`
 - `DB_USER=postgres`
 - `DB_PASSWORD=<sua_senha>`
 - `DB_NAME=postgres`
@@ -318,7 +304,7 @@ Variáveis de ambiente suportadas:
 
 - `PORT` (padrão: 3000)
 - `DB_HOST` (padrão: localhost)
-- `DB_PORT` (padrão: 5433)
+- `DB_PORT` (padrão: 5432)
 - `DB_USER` (padrão: postgres)
 - `DB_PASSWORD` (padrão: sua senha)
 - `DB_NAME` (padrão: postgres)
@@ -336,7 +322,7 @@ Exemplo de `.env`:
 ```env
 PORT=3000
 DB_HOST=localhost
-DB_PORT=5433
+DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=sua senha
 DB_NAME=postgres
@@ -354,7 +340,6 @@ Checklist recomendado antes de iniciar:
 
 - Definir `JWT_SECRET` forte em ambiente real.
 - Garantir que `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` e `DB_NAME` batem com o PostgreSQL.
-- Se for usar Docker para banco, manter `DB_PORT` alinhada com o `docker-compose.yml`.
 
 ### HTTPS local sem aviso de "conexao nao segura"
 
@@ -524,14 +509,6 @@ Fluxo recomendado:
 - Sincronização de schema automática (synchronize: true).
 - Carregamento automático de entidades (autoLoadEntities: true).
 
-### Suporte Docker
-
-- Arquivo `docker-compose.yml` com serviço PostgreSQL 16-Alpine.
-- Volume persistente `sced_pgdata` para dados do banco.
-- Healthcheck automático (`pg_isready`).
-- Porta mapeada: container 5432 → host 5433 (conforme `.env`).
-- Variáveis de ambiente pré-configuradas no arquivo `.env`.
-
 ### Ajustes Adicionais
 
 - Ajuste no bootstrap para evitar falha por porta ocupada: quando a porta configurada estiver em uso, a aplicação sobe automaticamente na próxima porta livre.
@@ -546,35 +523,34 @@ Fluxo recomendado:
 - Situação atual: o sistema já possui fallback automático para próxima porta livre.
 - Ação: conferir no log em qual porta a aplicação subiu e atualizar `@port` no `client.rest`.
 
-### Conexão com PostgreSQL Docker
+### Conexão com PostgreSQL local
 
-- **Verificar se container está rodando:**
+- **Verificar se o serviço está ativo:**
 
   ```bash
-  docker ps
+  psql -h localhost -p 5432 -U postgres -d postgres
   ```
 
-- **Verificar logs do container:**
+- **Verificar conexão com o banco:**
 
   ```bash
-  docker compose logs db
+  psql -h localhost -p 5432 -U postgres -d postgres
   ```
 
-- **Conectar com psql (opcional, para debug):**
+- **Conectar com psql para debug:**
 
   ```bash
-  docker compose exec db psql -U postgres
+  psql -h localhost -p 5432 -U postgres -d postgres
   ```
 
 - **Erros de senha/conexão:**
-  - Confirme que a senha no `.env` (DB_PASSWORD) corresponde à senha do container Docker.
-  - Se criou container com comando manual, certifique-se da porta: deve ser `-p 5433:5432` (host:container).
+  - Confirme que a senha no `.env` (DB_PASSWORD) corresponde à senha configurada no PostgreSQL local.
+  - Se a instância local estiver em outra porta, ajuste `DB_PORT` no `.env`.
 
-- **Remover e recriar container com a senha correta:**
+- **Reiniciar o serviço local, se necessário:**
 
   ```bash
-  docker compose down
-  docker compose up -d
+  # use o comando adequado ao serviço local do seu sistema operacional
   ```
 
 ### Erros de chave única no banco (409/500)

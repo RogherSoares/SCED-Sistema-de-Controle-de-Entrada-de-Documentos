@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Roles } from '../auth/roles.decorator';
 import { TiposDocumentosService } from './tipos-documentos.service';
 import { CreateTiposDocumentoDto } from './dto/create-tipos-documento.dto';
 import { UpdateTiposDocumentoDto } from './dto/update-tipos-documento.dto';
 
+@ApiTags('TiposDocumentos')
 @Controller('tipos-documento')
 export class TiposDocumentosController {
   constructor(
