@@ -17,6 +17,7 @@ import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { LoginUsuarioDto } from './dto/login-usuario.dto';
+import { VerificarCodigoDto } from './dto/verificar-codigo.dto';
 
 @ApiTags('Usuarios')
 @Controller('usuarios')
@@ -30,6 +31,16 @@ export class UsuariosController {
     return this.usuariosService.login(
       loginUsuarioDto.email,
       loginUsuarioDto.senha,
+    );
+  }
+
+  @Public()
+  @Post('verificar-codigo')
+  @HttpCode(200)
+  verificarCodigo(@Body() verificarCodigoDto: VerificarCodigoDto) {
+    return this.usuariosService.verificarCodigo(
+      verificarCodigoDto.usuarioId,
+      verificarCodigoDto.codigo,
     );
   }
 
@@ -51,7 +62,9 @@ export class UsuariosController {
     const isAdmin = (request?.user?.perfil || '').toString() === 'admin';
 
     if (!isAdmin && Number(request?.user?.idUsuario) !== idUsuario) {
-      throw new ForbiddenException('Sem permissao para acessar este usuario.');
+      throw new ForbiddenException(
+        'Sem permissao para acessar este usuario.',
+      );
     }
 
     return this.usuariosService.findOne(idUsuario);
@@ -68,13 +81,14 @@ export class UsuariosController {
 
     if (!isAdmin && Number(request?.user?.idUsuario) !== idUsuario) {
       throw new ForbiddenException(
-        
-      
         'Sem permissao para atualizar este usuario.',
       );
     }
 
-    return this.usuariosService.update(idUsuario, updateUsuarioDto);
+    return this.usuariosService.update(
+      idUsuario,
+      updateUsuarioDto,
+    );
   }
 
   @Roles('admin')
