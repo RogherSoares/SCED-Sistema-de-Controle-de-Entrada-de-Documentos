@@ -875,6 +875,55 @@ Valores que são possíveis: Recebido, Em análise, Encaminhado e Finalizado.
 ![Relatório](assets/img/Relatorios%20SCED.png)
 ![Gerenciamento de Usuários](assets/img/Gerenciamento%20Usuarios%20SCED.png)
 
+## Plano de Testes e Garantia de Qualidade (QA)
+
+[Voltar ao Sumário](#sumario)
+
+### Objetivo dos Testes
+
+Os testes realizados no SCED tiveram como objetivo validar as funcionalidades implementadas, garantindo que os requisitos funcionais fossem atendidos e que o sistema apresentasse comportamento consistente durante sua utilização.
+
+### Escopo dos Testes
+
+| Funcionalidade | Tipo de Teste | Status |
+|---------------|---------------|--------|
+| Login de usuários | Manual | Aprovado |
+| Controle de acesso por perfil | Manual | Aprovado |
+| Cadastro de usuários | Manual | Aprovado |
+| Cadastro de tipos de documentos | Manual | Aprovado |
+| Registro de documentos | Manual | Aprovado |
+| Consulta de documentos | Manual | Aprovado |
+| Alteração de status | Manual | Aprovado |
+| Histórico de movimentações | Manual | Aprovado |
+| Dashboard e métricas | Manual | Aprovado |
+| Geração de relatórios | Manual | Aprovado |
+| Upload de arquivos | Manual | Aprovado |
+| Visualização de anexos | Manual | Aprovado |
+
+### Cenários Validados
+
+- Acesso ao sistema utilizando credenciais válidas.
+- Bloqueio de acesso a usuários sem autenticação.
+- Cadastro de documentos com geração automática de protocolo.
+- Consulta de documentos por diferentes critérios.
+- Alteração de status durante o fluxo do documento.
+- Registro correto do histórico de movimentações.
+- Upload e visualização de arquivos anexados.
+- Exibição correta das métricas do dashboard.
+- Geração de relatórios conforme filtros selecionados.
+
+### Melhorias Identificadas
+
+- Ampliação dos testes automatizados.
+- Melhoria das mensagens de validação em formulários.
+- Padronização visual de mensagens de sucesso e erro.
+- Implementação de logs mais detalhados para auditoria.
+- Criação de testes de carga e desempenho.
+
+### Responsável pelos Testes
+
+Os testes de validação do sistema foram executados pela equipe de Qualidade (QA), verificando conformidade com os requisitos definidos para o projeto e contribuindo para a estabilidade da aplicação.
+
 ## Conclusões dos Testes
 
 Os testes realizados no sistema SCED confirmaram que as principais funcionalidades estão funcionando corretamente. Aqui estão os destaques:
