@@ -1,0 +1,297 @@
+:root {
+  --sidebar-width: 260px;
+  --primary-color: #0d6efd;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f0f0f0;
+}
+
+h2.top-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+}
+
+/* Sidebar Style */
+#sidebar {
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  background-color: #212529;
+  color: white;
+  transition: all 0.4s;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+  padding: 20px;
+  background-color: #1a1d20;
+  text-align: center;
+  border-bottom: 1px solid #343a40;
+}
+
+.nav-link {
+  color: #adb5bd !important;
+  padding: 12px 20px;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link i {
+  margin-right: 10px;
+  font-size: 1.1rem;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: white !important;
+  background-color: var(--primary-color);
+}
+
+/* Main Content */
+#content {
+  flex-grow: 1;
+  padding: 18px 22px 28px;
+  overflow-y: auto;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-body {
+  background-color: #fdfdfd;
+  border-radius: 15px;
+}
+
+.status-badge {
+  font-size: 0.85rem;
+  padding: 5px 10px;
+}
+
+.status-badge.status-recebido {
+  background-color: #3f7ec9;
+  color: #fff;
+}
+
+.status-badge.status-analise {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.status-badge.status-encaminhado {
+  background-color: #0dcaf0;
+  color: #212529;
+}
+
+.status-badge.status-finalizado {
+  background-color: #198754;
+  color: #fff;
+}
+
+.operator-card {
+  border-radius: 2px;
+  padding: 8px 14px 7px;
+  min-width: 50px;
+  text-align: center;
+  color: #111;
+}
+
+.operator-icon {
+  display: block;
+  font-size: 2rem;
+  line-height: 1;
+  color: #000;
+  margin-bottom: 2px;
+}
+
+.operator-name {
+  font-size: 0.8rem;
+  margin: 0;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.operator-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 1px 10px;
+  border-radius: 999px;
+  background-color: #18d7f1;
+  font-size: 0.55rem;
+  line-height: 1.2;
+  font-weight: 700;
+  text-transform: lowercase;
+}
+
+.operator-badge.operator-badge-admin {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.operator-divider {
+  border: 0;
+  border-top: 1px solid #b8b8b8;
+  width: 100%;
+  margin: 10px 0 0;
+  opacity: 1;
+}
+
+.dashboard-metrics .metric-card {
+  background-color: #f8f8f8;
+  border-radius: 7px;
+  border-left: 4px solid #3f7ec9;
+  padding: 12px 16px;
+  min-height: 84px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-metrics .metric-label {
+  margin: 0 0 3px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #151515;
+}
+
+.dashboard-metrics .metric-value {
+  margin: 0;
+  font-size: 2.8rem;
+  line-height: 0.95;
+  font-weight: 800;
+  color: #050505;
+}
+
+.dashboard-metrics .metric-analise {
+  border-left-color: #ffc107;
+}
+
+.dashboard-metrics .metric-encaminhados {
+  border-left-color: #0dcaf0;
+}
+
+.dashboard-metrics .metric-finalizados {
+  border-left-color: #198754;
+}
+
+.registro-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.registro-shell .registro-card {
+  margin-top: 18px;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  border: 1px solid #dadada;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.registro-shell .registro-card .card-body {
+  padding: 38px 32px 28px;
+}
+
+.registro-shell .form-label {
+  color: #111;
+  font-size: 1.02rem;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.registro-shell .form-control,
+.registro-shell .form-select {
+  border-radius: 6px;
+  border: 1px solid #7f7f7f;
+  height: 40px;
+}
+
+.registro-shell textarea.form-control {
+  min-height: 114px;
+  height: auto;
+  resize: none;
+  padding-top: 10px;
+}
+
+.registro-shell .protocolo-input {
+  font-style: italic;
+  font-weight: 500;
+  color: #111;
+  background-color: #fdfdfd;
+}
+
+.registro-shell .form-text {
+  margin-top: 3px;
+  color: #444;
+  font-size: 0.85rem;
+}
+
+.registro-shell .upload-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: px;
+}
+
+.registro-shell .btn-upload {
+  min-width: 140px;
+  border-radius: 8px;
+  border: 1px solid #1e63b7;
+  background-color: #2d8be4;
+  color: #fff;
+  font-weight: 600;
+  padding: 5px 10px;
+}
+
+.registro-shell .upload-line {
+  width: 108px;
+  height: 8px;
+  border-radius: 999px;
+  background-color: #d6d6d6;
+  overflow: hidden;
+}
+
+.registro-shell .upload-line-progress {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #2f8a17, #6bcf51);
+  transition: width 0.12s linear;
+}
+
+.registro-shell .bottom-actions {
+  border-top: 1px solid #c7c7c7;
+  margin-top: 18px;
+  padding-top: 22px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.registro-shell .btn-clear {
+  border-radius: 8px;
+  border-color: #6f6f6f;
+  color: #161616;
+  padding: 6px 16px;
+}
+
+.registro-shell .btn-finish {
+  border-radius: 8px;
+  background-color: #2f8a17;
+  border-color: #2f8a17;
+  color: #fff;
+  font-weight: 600;
+  padding: 6px 16px;
+}

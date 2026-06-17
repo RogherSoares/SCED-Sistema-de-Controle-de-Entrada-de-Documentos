@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciamento de Usuários - SCED</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+      body {
+        background-color: #f0f0f0;
+      }
+      .operator-badge.operator-badge-admin {
+        background-color: #dc3545;
+        color: #fff;
+      }
+
+      .user-role-badge {
+        display: inline-block;
+        min-width: 108px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-align: center;
+        border: 1px solid #b9b9b9;
+        background-color: #18d7f1;
+        color: #1c1c1c;
+      }
+
+      .user-role-badge.user-role-admin {
+        border-color: #dc3545;
+        background-color: #dc3545;
+        color: #ffffff;
+      }
+
+      .perfil-coluna {
+        text-align: center;
+        width: 170px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <h4 class="mb-0">SCED</h4>
+        <small>Gestão de Documentos</small>
+      </div>
+
+      <div class="p-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="registro.html" class="nav-link">
+              <i class="bi bi-file-earmark-plus"></i> Registrar Entrada
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="consulta.html" class="nav-link">
+              <i class="bi bi-search"></i> Consultar
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="relatorios.html" class="nav-link">
+              <i class="bi bi-graph-up"></i> Relatórios
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="usuarios.html" class="nav-link active">
+              <i class="bi bi-people"></i> Usuários
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-auto p-3">
+        <hr class="text-secondary" />
+        <a href="login.html" class="nav-link text-danger" id="logoutLink">
+          <i class="bi bi-box-arrow-left"></i> Sair
+        </a>
+      </div>
+    </nav>
+
+    <main id="content" class="bg-light">
+      <div id="usuariosFeedback" class="alert d-none" role="alert"></div>
+
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 class="top-title">Gerenciamento de Usuários</h2>
+          <div class="operator-card" aria-label="Informacoes do operador">
+            <i class="bi bi-person-circle operator-icon" aria-hidden="true"></i>
+            <h3 class="operator-name" id="operatorName">Operador</h3>
+            <span class="operator-badge" id="operatorPerfil">Perfil</span>
+          </div>
+        </div>
+        <hr class="operator-divider" />
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-8">
+          <div class="card shadow-sm border-0">
+            <div
+              class="card-header bg-white py-3 d-flex justify-content-between align-items-center"
+            >
+              <h5 class="mb-0 fw-bold">Gestão de Acessos</h5>
+              <button
+                id="novoUsuarioBtn"
+                class="btn btn-sm btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalNovoUsuario"
+              >
+                <i class="bi bi-person-plus me-1"></i> Novo Usuário
+              </button>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-3">Nome</th>
+                    <th>E-mail</th>
+                    <th class="perfil-coluna">Perfil</th>
+                    <th class="text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="usuariosTableBody">
+                  <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">
+                      Carregando usuarios...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0">
+            <div
+              class="card-header bg-white py-3 d-flex justify-content-between align-items-center"
+            >
+              <h5 class="mb-0 fw-bold">Tipos de Documento</h5>
+              <button
+                type="button"
+                class="btn btn-sm btn-success"
+                id="tipoDocumentoNovoBtn"
+                title="Novo tipo de documento"
+              >
+                <i class="bi bi-plus"></i>
+              </button>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush" id="tiposDocumentoLista">
+                <li class="list-group-item text-muted">
+                  Carregando tipos de documento...
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal fade" id="modalNovoUsuario" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="usuarioModalTitulo">
+              Cadastrar Usuário
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="usuarioForm">
+              <input type="hidden" id="usuarioId" />
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Nome Completo</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="usuarioNome"
+                  maxlength="150"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold">E-mail</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="usuarioEmailLocal"
+                    maxlength="120"
+                    placeholder="nome.sobrenome"
+                    required
+                  />
+                  <span class="input-group-text">@sced.com</span>
+                </div>
+                <div class="form-text">
+                  O dominio do e-mail e fixo em @sced.com.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold" id="usuarioSenhaLabel"
+                  >Senha Inicial</label
+                >
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="usuarioSenha"
+                    minlength="6"
+                    maxlength="255"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    id="toggleUsuarioSenha"
+                    data-target-input="usuarioSenha"
+                    aria-label="Mostrar ou ocultar senha"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+                <div class="form-text" id="usuarioSenhaHint">
+                  Obrigatoria para cadastrar novo usuario. Minimo de 6
+                  caracteres.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label
+                  class="form-label small fw-bold"
+                  id="usuarioConfirmarSenhaLabel"
+                  >Confirmar Senha</label
+                >
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="usuarioConfirmarSenha"
+                    minlength="6"
+                    maxlength="255"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    id="toggleUsuarioConfirmarSenha"
+                    data-target-input="usuarioConfirmarSenha"
+                    aria-label="Mostrar ou ocultar confirmacao de senha"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Perfil</label>
+                <select class="form-select" id="usuarioPerfil" required>
+                  <option value="admin">Administrador</option>
+                  <option value="operador">Operador</option>
+                </select>
+              </div>
+              <div
+                class="text-danger small mb-2 d-none"
+                id="usuarioFormErro"
+              ></div>
+              <div class="text-end border-top pt-3">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-primary px-4"
+                  id="usuarioSalvarBtn"
+                >
+                  Salvar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalTipoDocumento" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="tipoDocumentoModalTitulo">
+              Novo Tipo de Documento
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="tipoDocumentoForm">
+              <input type="hidden" id="tipoDocumentoId" />
+              <div class="mb-3">
+                <label class="form-label small fw-bold"
+                  >Nome do Documento</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="tipoDocumentoNome"
+                  placeholder="Ex: Notificação"
+                  maxlength="120"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Descrição</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="tipoDocumentoDescricao"
+                  placeholder="Descrição (opcional)"
+                  maxlength="255"
+                />
+              </div>
+              <div
+                class="text-danger small mt-2 d-none"
+                id="tipoDocumentoFormErro"
+              ></div>
+              <div class="text-end border-top pt-3 mt-3">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary d-none"
+                  id="tipoDocumentoCancelarBtn"
+                >
+                  Cancelar edição
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-success"
+                  id="tipoDocumentoSalvarBtn"
+                  title="Salvar tipo de documento"
+                >
+                  Salvar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/index.js"></script>
+    <script src="assets/js/usuarios.js"></script>
+  </body>
+</html>
